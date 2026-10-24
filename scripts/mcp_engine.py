@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-HappyMeal.exe — McDonald's China MCP Engine & YuE Symbolic Score Generator
+HappyMeal.exe — McDonald's China MCP Engine
 
 1. Connects to McDonald's China Official MCP Server (https://mcp.mcd.cn, Streamable HTTP)
    using read-only tools:
@@ -9,10 +9,7 @@ HappyMeal.exe — McDonald's China MCP Engine & YuE Symbolic Score Generator
 2. Generates Store Acoustic Stamp (from storeCode + storeName + createTime, read-only,
    zero intrusion into restaurant ordering/kitchen workflow).
 3. Evaluates 6 Real MCP Easter Eggs based on live October 2026 campaign-calendar & nutrition data.
-4. Outputs both:
-   - Interactive Web Audio Synthesizer payload (toy_state.json)
-   - YuE / YuE2 compatible symbolic composition plan (yue_song.json with ABC score + style + lyrics)
-     crediting github.com/multimodal-art-projection/YuE
+4. Outputs a local synthetic payload for the browser's Web Audio engine.
 """
 
 import argparse
@@ -76,7 +73,7 @@ PRESET_ORDERS = {
         "orderId": "DEMO-NIGHT",
         "createTime": "2026-10-23 23:42:18",
         "storeCode": "DEMO",
-        "storeName": "深夜八音盒厨房（虚构）",
+        "storeName": "深夜八音盒厨房（模拟）",
         "city": "DEMO",
         "orderType": "到店取餐",
         "realTotalAmount": 22.9,
@@ -93,7 +90,7 @@ PRESET_ORDERS = {
         "orderId": "DEMO-DRAGON",
         "createTime": "2026-10-23 19:15:04",
         "storeCode": "DEMO",
-        "storeName": "限定八音盒厨房（虚构）",
+        "storeName": "限定八音盒厨房（模拟）",
         "city": "DEMO",
         "orderType": "到店取餐",
         "realTotalAmount": 44.9,
@@ -109,7 +106,7 @@ PRESET_ORDERS = {
         "orderId": "DEMO-CONE",
         "createTime": "2026-10-23 15:30:00",
         "storeCode": "DEMO",
-        "storeName": "午后八音盒厨房（虚构）",
+        "storeName": "午后八音盒厨房（模拟）",
         "city": "DEMO",
         "orderType": "到店取餐",
         "realTotalAmount": 36.0,
@@ -125,7 +122,7 @@ PRESET_ORDERS = {
         "orderId": "DEMO-MORNING",
         "createTime": "2026-10-23 08:12:45",
         "storeCode": "DEMO",
-        "storeName": "早安八音盒厨房（虚构）",
+        "storeName": "早安八音盒厨房（模拟）",
         "city": "DEMO",
         "orderType": "到店取餐",
         "realTotalAmount": 21.5,
@@ -141,7 +138,7 @@ PRESET_ORDERS = {
         "orderId": "DEMO-ANGUS",
         "createTime": "2026-10-23 20:48:10",
         "storeCode": "DEMO",
-        "storeName": "周末八音盒厨房（虚构）",
+        "storeName": "周末八音盒厨房（模拟）",
         "city": "DEMO",
         "orderType": "麦乐送",
         "realTotalAmount": 58.0,
@@ -312,11 +309,11 @@ def compute_store_acoustic_stamp(store_code: str, store_name: str, create_time: 
     seed_int = int(digest[:8], 16)
 
     keys = [
-        {"key": "F Major Pentatonic", "root_hz": 174.61, "chords": ["Fmaj7", "Em7", "Dm7", "Cmaj7"], "abc_key": "F"},
-        {"key": "G Major Pentatonic", "root_hz": 196.00, "chords": ["Gmaj7", "F#m7", "Em7", "Dmaj7"], "abc_key": "G"},
-        {"key": "C Major Pentatonic", "root_hz": 130.81, "chords": ["Cmaj7", "Bm7", "Am7", "Gmaj7"], "abc_key": "C"},
-        {"key": "Eb Major Warm", "root_hz": 155.56, "chords": ["Ebmaj7", "Dm7", "Cm7", "Bbmaj7"], "abc_key": "Eb"},
-        {"key": "D Major CityPop", "root_hz": 146.83, "chords": ["Dmaj7", "C#m7", "Bm7", "Amaj7"], "abc_key": "D"},
+        {"key": "F Major Pentatonic", "root_hz": 174.61, "chords": ["Fmaj7", "Em7", "Dm7", "Cmaj7"]},
+        {"key": "G Major Pentatonic", "root_hz": 196.00, "chords": ["Gmaj7", "F#m7", "Em7", "Dmaj7"]},
+        {"key": "C Major Pentatonic", "root_hz": 130.81, "chords": ["Cmaj7", "Bm7", "Am7", "Gmaj7"]},
+        {"key": "Eb Major Warm", "root_hz": 155.56, "chords": ["Ebmaj7", "Dm7", "Cm7", "Bbmaj7"]},
+        {"key": "D Major CityPop", "root_hz": 146.83, "chords": ["Dmaj7", "C#m7", "Bm7", "Amaj7"]},
     ]
     chosen_key = keys[seed_int % len(keys)]
 
@@ -348,7 +345,6 @@ def compute_store_acoustic_stamp(store_code: str, store_name: str, create_time: 
         "shift_code": shift_code,
         "ambience": ambience,
         "musical_key": chosen_key["key"],
-        "abc_key": chosen_key["abc_key"],
         "root_hz": chosen_key["root_hz"],
         "chord_progression": chosen_key["chords"],
         "base_bpm": base_bpm,
@@ -425,75 +421,6 @@ def detect_easter_eggs(order: dict, total_kcal: int, campaigns: list):
     return eggs
 
 
-def build_yue_symbolic_plan(order: dict, stamp: dict, nutrition_summary: dict, eggs: list):
-    """
-    Build a YuE / YuE2 (github.com/multimodal-art-projection/YuE) compatible
-    symbolic music plan (`song.json`):
-    - `cot`: "full" (white-box symbolic score + chord plan)
-    - `style`: style tags
-    - `abc`: valid ABC score combining the store's key + Ba-Da-Ba-Ba-Ba motif + order melody
-    - `lyrics`: structured [verse] / [chorus] lyrics generated from the order
-    """
-    bpm = stamp["base_bpm"]
-    abc_key = stamp["abc_key"]
-    chords = stamp["chord_progression"]
-    egg_titles = [e["badge"] for e in eggs]
-
-    # Map items to ABC bar phrases
-    bars = [
-        f'"{chords[0]}" c2 d2 f2 g2 |',
-        f'"{chords[1]}" a2 g2 f2 d2 |',
-        f'"{chords[2]}" c2 d2 f2 a2 |',
-        f'"{chords[3]}" g4 z4 |',
-        # Iconic 5-note happy motif resolution
-        f'"{chords[0]}" c1 d1 f1 a2 g3 |',
-    ]
-    abc_score = "\n".join([
-        "X:1",
-        f"T:HappyMeal.exe - {order['orderId']}",
-        f"C:McDonald's MCP x YuE Symbolic Planner ({stamp['serial_no']})",
-        "M:4/4",
-        "L:1/8",
-        f"Q:1/4={bpm}",
-        f"K:{abc_key}",
-        *bars,
-    ])
-
-    item_lines = "、".join(f"{i['name']}×{i['qty']}" for i in order["items"])
-    style_tags = "city-pop, warm analog synth, pocket synthesizer, groovy bassline, playful, clean production"
-    if any(e["id"] == "NIGHT_SANCTUARY" for e in eggs):
-        style_tags = "lo-fi hip hop, warm vinyl crackle, electric piano, late night chill, gentle groove"
-    elif any(e["id"] == "GD_DAISY" for e in eggs):
-        style_tags = "k-hiphop, trendy 808 bass, crisp trap hi-hats, brass synth, energetic"
-
-    lyrics = (
-        f"[verse]\n"
-        f"{order['createTime'][:16]} 的 {order['storeName']}\n"
-        f"出厂编号 {stamp['serial_no']} 刚刚点亮\n"
-        f"餐盘上是 {item_lines}\n"
-        f"一共 {nutrition_summary['total_kcal']} 大卡 把疲惫都融化\n\n"
-        f"[chorus]\n"
-        f"小时候等考满分 才有的开心乐园餐\n"
-        f"长大后一顿随心配 也能掉出声光玩具\n"
-        f"Ba da ba ba ba 麦门永存\n"
-        f"这十五分钟 世界安静 只听我的合成器\n"
-    )
-
-    return {
-        "generator": "HappyMeal.exe x YuE2 Symbolic Bridge",
-        "reference_repo": "https://github.com/multimodal-art-projection/YuE",
-        "cot": "full",
-        "style": style_tags,
-        "abc": abc_score,
-        "lyrics": lyrics,
-        "metadata": {
-            "serial_no": stamp["serial_no"],
-            "total_kcal": nutrition_summary["total_kcal"],
-            "easter_eggs": egg_titles,
-        },
-    }
-
-
 def build_toy_payload(order_key="late_night_coder", custom_order=None):
     order = custom_order or PRESET_ORDERS.get(order_key, PRESET_ORDERS["late_night_coder"])
 
@@ -533,7 +460,6 @@ def build_toy_payload(order_key="late_night_coder", custom_order=None):
         order["storeCode"], order["storeName"], order["createTime"], order["orderType"]
     )
     eggs = detect_easter_eggs(order, total_kcal, REAL_OCT_2026_CAMPAIGNS)
-    yue_plan = build_yue_symbolic_plan(order, stamp, nutrition_summary, eggs)
 
     return {
         "order": {**order, "items": enriched_items},
@@ -541,7 +467,6 @@ def build_toy_payload(order_key="late_night_coder", custom_order=None):
         "store_stamp": stamp,
         "easter_eggs": eggs,
         "campaigns_snapshot": REAL_OCT_2026_CAMPAIGNS[:6],
-        "yue_symbolic_plan": yue_plan,
     }
 
 

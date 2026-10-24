@@ -803,8 +803,8 @@
 
       <div class="instant-play-bar">
         <div class="instant-copy">
-          <strong>只是来玩？不用订单，直接开始。</strong>
-          <span>已经装好一份夜宵；选心情、点播放就能听。</span>
+          <strong>游客可玩：默认是一份模拟套餐</strong>
+          <span>不用登录或订单，选心情、点播放就能听；也可以「换一餐」。</span>
         </div>
         <button class="surprise-btn" id="surpriseMeBtn">🎁 换一餐</button>
       </div>
@@ -934,7 +934,6 @@
           <button class="ghost-btn gold" id="downloadFullWavBtn">⬇ 下载这首歌 (.wav)</button>
           <button class="ghost-btn" id="printPhysicalBtn">🖨️ 打印小票</button>
           <button class="ghost-btn" id="exportEscPosBtn">🔌 POS 指令（实验）</button>
-          <button class="ghost-btn" id="exportYueBtn">🎼 导出 YuE 渲染包</button>
         </div>
       </div>
 
@@ -945,7 +944,7 @@
             <div class="dt-m-logo">M</div>
             <div class="dt-title">
               <h3 id="dtSongTitle">《深夜高新南的13块9温柔》</h3>
-              <p id="dtSerial">ORDER #DEMO-NIGHT · 深夜八音盒厨房 · 虚构 (#DEMO)</p>
+              <p id="dtSerial">ORDER #DEMO-NIGHT · 深夜八音盒厨房 · 模拟 (#DEMO)</p>
             </div>
           </div>
           <span class="pill-tag" id="dtEggBadge">🌙 24h深夜留灯彩蛋</span>
@@ -980,7 +979,7 @@
             <div style="font-size:10px">McDONALD'S MCP × HAPPYMEAL THERMAL POS</div>
           </div>
           <div class="th-divider"></div>
-          <div class="th-row"><span id="thStore">门店: 深夜八音盒厨房 · 虚构</span><span id="thCode">#DEMO</span></div>
+          <div class="th-row"><span id="thStore">门店: 深夜八音盒厨房 · 模拟</span><span id="thCode">#DEMO</span></div>
           <div class="th-row"><span id="thOrder">单号: MCD-0248-42</span><span id="thTime">2026-10-23 23:42</span></div>
           <div class="th-row"><span id="thMood">大人心情: 🌧️ 有点 Down (4★)</span><span id="thKcal">670 kcal</span></div>
           <div class="th-divider"></div>
@@ -1000,7 +999,7 @@
 </div>
 
 <div class="footer-credit">
-  非官方作品 · 默认演示数据为虚构 · 真实麦当劳订单为可选只读接入
+  非官方参赛作品 · 订单数据来源接入自麦当劳官方 MCP · 默认演示数据为模拟（游客可游玩）
 </div>
 
 <script>
@@ -1183,11 +1182,11 @@ const STAR_DESCRIPTIONS = {
 };
 
 const ORDER_PRESETS = {
-  order_night:   { orderNo: "DEMO-NIGHT", storeCode: "DEMO", storeName: "深夜八音盒厨房 · 虚构", time: "今晚 · 自由搭配", burger: "double_cheese", sides: ["nuggets", "fries"], drinks: ["zero_coke"], mood: "down", stars: 4 },
-  order_bigmac:  { orderNo: "DEMO-BIGMAC", storeCode: "DEMO", storeName: "开心八音盒厨房 · 虚构", time: "今天 · 自由搭配", burger: "bigmac", sides: ["fries"], drinks: ["coke"], mood: "happy", stars: 5 },
-  order_spicy:   { orderNo: "DEMO-SPICY", storeCode: "DEMO", storeName: "热辣八音盒厨房 · 虚构", time: "今天 · 自由搭配", burger: "mcspicy", sides: ["wings", "fries"], drinks: ["mcflurry"], mood: "happy", stars: 4 },
-  order_morning: { orderNo: "DEMO-MORNING", storeCode: "DEMO", storeName: "早安八音盒厨房 · 虚构", time: "今早 · 自由搭配", burger: "griddle", sides: ["hashbrown"], drinks: ["americano"], mood: "numb", stars: 3 },
-  order_gd:      { orderNo: "DEMO-DRAGON", storeCode: "DEMO", storeName: "限定八音盒厨房 · 虚构", time: "此刻 · 自由搭配", burger: "dragon_burger", sides: ["gd_box"], drinks: ["ash_cone"], mood: "happy", stars: 5 }
+  order_night:   { orderNo: "DEMO-NIGHT", storeCode: "DEMO", storeName: "深夜八音盒厨房 · 模拟", time: "今晚 · 自由搭配", burger: "double_cheese", sides: ["nuggets", "fries"], drinks: ["zero_coke"], mood: "down", stars: 4 },
+  order_bigmac:  { orderNo: "DEMO-BIGMAC", storeCode: "DEMO", storeName: "开心八音盒厨房 · 模拟", time: "今天 · 自由搭配", burger: "bigmac", sides: ["fries"], drinks: ["coke"], mood: "happy", stars: 5 },
+  order_spicy:   { orderNo: "DEMO-SPICY", storeCode: "DEMO", storeName: "热辣八音盒厨房 · 模拟", time: "今天 · 自由搭配", burger: "mcspicy", sides: ["wings", "fries"], drinks: ["mcflurry"], mood: "happy", stars: 4 },
+  order_morning: { orderNo: "DEMO-MORNING", storeCode: "DEMO", storeName: "早安八音盒厨房 · 模拟", time: "今早 · 自由搭配", burger: "griddle", sides: ["hashbrown"], drinks: ["americano"], mood: "numb", stars: 3 },
+  order_gd:      { orderNo: "DEMO-DRAGON", storeCode: "DEMO", storeName: "限定八音盒厨房 · 模拟", time: "此刻 · 自由搭配", burger: "dragon_burger", sides: ["gd_box"], drinks: ["ash_cone"], mood: "happy", stars: 5 }
 };
 
 let curOrder = { ...ORDER_PRESETS.order_night };
@@ -1836,64 +1835,6 @@ function exportEscPosBinary() {
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = `thermal_pos_${shareSongId()}.escpos.bin`;
-  a.click();
-}
-
-/**
- * Export a complete, ready-to-render YuE package (markdown).
- * The in-app song is the instant Web Audio rendition; this package carries the full
- * symbolic score + style tags so anyone with a GPU can render a studio version
- * with the open-source model github.com/multimodal-art-projection/YuE
- */
-function exportYuePackage() {
-  const b = getBurger();
-  const m = getMoodObj();
-  const score = compileSongScore();
-  const scaleName = currentMood === "happy" ? "Major" : currentMood === "numb" ? "Lydian" : "Natural Minor (Aeolian)";
-  const chordLine = m.chords.map((ch, i) => `  - Bar ${i + 1}: [${ch.join(", ")}] semitones over root ${b.rootHz.toFixed(1)} Hz`).join("\n");
-  const motif = (name, arr) => arr.map((d, i) => (i % 8 === 0 ? "\n  " : "") + String(m.scale[d % m.scale.length]).padStart(3)).join(" ");
-  const secs = SONG_LAYOUT.map(s => `  - ${s.id}: ${s.bars} bars`);
-  const md = [
-    "# HappyMeal.exe × YuE 渲染包",
-    "",
-    `> 这顿饭的歌：${b.songTitle}`,
-    `> 门店：${curOrder.storeName} (#${curOrder.storeCode}) · 订单：${curOrder.orderNo}`,
-    `> 心情：${m.label} (${moodStars}★) · BPM ${m.bpm} · 音阶：${scaleName}`,
-    "",
-    "## Style Tags (喂给 YuE 的风格提示)",
-    "```",
-  `genre: pop, healing, warm lo-fi; mood: ${currentMood === "down" ? "gentle, comforting" : currentMood === "numb" ? "dreamy, floating" : "bright, playful"};`,
-  `bpm: ${m.bpm}; instruments: ${m.timbre === "felt_piano" ? "felt piano, cello, soft brushes" : m.timbre === "marimba" ? "marimba, warm pad" : "celesta, e-piano"}; vocal: instrumental (melody only);`,
-    "```",
-    "",
-    `## Song Structure (${SONG_LAYOUT.reduce((sum, section) => sum + section.bars, 0)} bars)`,
-    "```",
-    secs.join("\n"),
-    "```",
-    "",
-    "## Harmony (semitone offsets from burger root)",
-    "```",
-    chordLine,
-    "```",
-    "",
-    "## Melody Motifs (scale semitones per 8th-note step)",
-    "```",
-    `verse:  ${motif("verse", b.verseDegrees)}`,
-    `chorus: ${motif("chorus", b.chorusDegrees)}`,
-    "```",
-    "",
-    "## How to render",
-    "1. Clone https://github.com/multimodal-art-projection/YuE and follow its install (CUDA GPU required).",
-    "2. Use the style tags above as the genre/metadata prompt; this package is melody-only, no lyrics needed.",
-    "3. The symbolic score above is the ground truth of the in-app rendition — keep its structure and harmony.",
-    "",
-    `Generated ${new Date().toLocaleString("zh-CN")} by HappyMeal.exe · events: ${score.events.length} notes/drums over ${score.totalSteps} steps (${Math.round(score.totalSteps * score.stepSec)}s)`,
-    "Optional export format reference: YuE (github.com/multimodal-art-projection/YuE). This package is metadata only; HappyMeal.exe does not include or run YuE."
-  ].join("\n");
-  const blob = new Blob([md], { type: "text/markdown" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = `YuE_Package_${curOrder.orderNo}_${b.id}_${currentMood}${moodStars}.md`;
   a.click();
 }
 
@@ -3114,7 +3055,6 @@ document.getElementById("printPhysicalBtn").addEventListener("click", () => {
   setTimeout(() => window.print(), 150);
 });
 document.getElementById("exportEscPosBtn").addEventListener("click", exportEscPosBinary);
-document.getElementById("exportYueBtn").addEventListener("click", exportYuePackage);
 
 document.getElementById("reelToggleBtn").addEventListener("click", e => {
   const ws = document.getElementById("workspace");
