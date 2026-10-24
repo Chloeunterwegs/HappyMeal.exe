@@ -42,8 +42,8 @@ def generate_escpos_bytes(ticket: dict) -> bytes:
     # Left align metadata
     buf += b"\x1b\x61\x00"
     lines = [
-        f"门店: {ticket.get('store_name', '麦当劳餐厅')} (#{ticket.get('store_code', '1900248')})",
-        f"单号: {ticket.get('order_no', 'MCD-20261023')}",
+        f"门店: {ticket.get('store_name', '八音盒厨房（模拟）')} (#{ticket.get('store_code', 'DEMO')})",
+        f"单号: {ticket.get('order_no', 'DEMO-THERMAL')}",
         f"时间: {ticket.get('time', datetime.now().strftime('%Y-%m-%d %H:%M'))}",
         f"心情: {ticket.get('mood_label', '有点 Down ★★★★☆')}",
         f"调性: {ticket.get('musical_key', 'A Minor Healing Ballad')}",
@@ -52,7 +52,7 @@ def generate_escpos_bytes(ticket: dict) -> bytes:
         f" ● 汉堡: {ticket.get('burger', '双层吉士汉堡')}",
         f" ● 小食: {ticket.get('sides', '中薯条')}",
         f" ● 饮品: {ticket.get('drinks', '无糖可乐')}",
-        f" ● 能量: {ticket.get('kcal', 770)} kcal",
+        f" ● 模拟能量: {ticket.get('kcal', 770)} kcal",
         "-" * 32,
         ticket.get("message", ticket.get("lyrics", "小时候考满分才有的玩具，今晚这顿随心配替你补上。")),
         "-" * 32,
@@ -62,7 +62,7 @@ def generate_escpos_bytes(ticket: dict) -> bytes:
 
     # Center align for QR code
     buf += b"\x1b\x61\x01"
-    qr_payload = ticket.get("song_download_url", "https://chloeunterwegs.github.io/HappyMeal.exe/web/index.html#s=HMDEMO~double_cheese~down~4")
+    qr_payload = ticket.get("share_url", ticket.get("song_download_url", "https://chloeunterwegs.github.io/HappyMeal.exe/web/index.html#s=HMDEMO~double_cheese~down~4"))
     qr_bytes = qr_payload.encode("utf-8")
     store_len = len(qr_bytes) + 3
     pL = store_len & 0xFF
@@ -75,7 +75,7 @@ def generate_escpos_bytes(ticket: dict) -> bytes:
     buf += bytes([0x1D, 0x28, 0x6B, pL, pH, 0x31, 0x50, 0x30]) + qr_bytes
     buf += b"\x1d\x28\x6b\x03\x00\x31\x51\x30"
 
-    buf += "\n扫码打开并下载这首歌\n".encode("gb18030", errors="replace")
+    buf += "\n扫码打开分享页，可试听或下载\n".encode("gb18030", errors="replace")
     buf += "Ba-Da-Ba-Ba-Ba · 麦门永存\n\n\n".encode("gb18030", errors="replace")
     # Cut paper
     buf += b"\x1d\x56\x42\x00"
@@ -125,17 +125,17 @@ def main():
     args = parser.parse_args()
 
     sample_ticket = {
-        "store_name": "麦当劳深圳高新南一道餐厅",
-        "store_code": "1900248",
-        "order_no": "MCD-0248-1023",
+        "store_name": "深夜八音盒厨房（模拟）",
+        "store_code": "DEMO",
+        "order_no": "DEMO-THERMAL",
         "mood_label": "🌧️ 有点 Down (★★★★☆)",
-        "musical_key": "A Minor カノン治愈钢琴八音盒",
+        "musical_key": "A Minor · 柔音钢琴",
         "burger": "双层吉士汉堡",
         "sides": "中薯条 + 麦乐鸡",
         "drinks": "无糖可口可乐",
         "kcal": 1000,
         "lyrics": "小时候考满分才有的开心乐园餐玩具，今晚这顿 13.9 的随心配替你补上。",
-        "song_download_url": "https://chloeunterwegs.github.io/HappyMeal.exe/web/index.html#s=HMDEMO~double_cheese~down~4",
+        "share_url": "https://chloeunterwegs.github.io/HappyMeal.exe/web/index.html#s=HMDEMO~double_cheese~down~4",
     }
 
     if args.out_bin:

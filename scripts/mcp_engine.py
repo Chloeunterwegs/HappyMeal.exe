@@ -90,7 +90,7 @@ PRESET_ORDERS = {
         "orderId": "DEMO-DRAGON",
         "createTime": "2026-10-23 19:15:04",
         "storeCode": "DEMO",
-        "storeName": "限定八音盒厨房（模拟）",
+        "storeName": "主题八音盒厨房（模拟）",
         "city": "DEMO",
         "orderType": "到店取餐",
         "realTotalAmount": 44.9,
@@ -333,7 +333,7 @@ def compute_store_acoustic_stamp(store_code: str, store_name: str, create_time: 
         base_bpm = 110
     else:
         shift_code = "NIGHT-24H"
-        ambience = "24h 深夜留灯 · Lo-Fi 黑胶与窗外微雨"
+        ambience = "深夜留灯 · Lo-Fi 与窗外微雨"
         base_bpm = 88
 
     serial_no = f"HM-{store_code[-4:]}-{dt.strftime('%m%d')}-{digest[:4].upper()}"
@@ -373,7 +373,7 @@ def detect_easter_eggs(order: dict, total_kcal: int, campaigns: list):
         eggs.append({
             "id": "SWEET_COOL_DROP",
             "badge": "🩶 当日上新 · 甜酷冰晶合成器",
-            "title": "10月新品「灰焰圆筒 / 蓝莓爆爆珠」彩蛋",
+            "title": "10月主题「灰焰圆筒 / 蓝莓爆爆珠」彩蛋",
             "desc": "命中 MCP campaign-calendar 10月甜品上新！解锁 Crystal Bell 玻璃冰晶琶音器与气泡粒子特效。",
             "synth_mod": {"theme": "ash_silver", "extra_riff": "crystal_bell", "bpm_boost": 4},
         })
@@ -388,11 +388,11 @@ def detect_easter_eggs(order: dict, total_kcal: int, campaigns: list):
             "synth_mod": {"theme": "maple_warm", "extra_riff": "warm_rhodes", "bpm_boost": -6},
         })
 
-    # 4. Late Night 24h Sanctuary
+    # 4. Late-night creative theme (not a claim about store opening hours)
     if dt.hour >= 22 or dt.hour < 5:
         eggs.append({
             "id": "NIGHT_SANCTUARY",
-            "badge": "🌙 深夜留灯 · 24h 庇护所模式",
+            "badge": "🌙 深夜留灯 · 夜间主题",
             "title": "深夜 24 小时门店陪伴彩蛋",
             "desc": "22:00 后进店/点单触发。自动注入温暖黑胶底噪与慢速 Lo-Fi 滤波：那盏亮着的 M 字灯陪你改完最后一个 Bug。",
             "synth_mod": {"theme": "midnight_neon", "extra_riff": "lofi_vinyl", "bpm_boost": -8},
