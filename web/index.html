@@ -701,19 +701,34 @@
     }
   }
 
-  /* Order Import UI */
+  /* Instant play first; real-order tooling stays optional. */
+  .instant-play-bar {
+    display: flex; align-items: center; gap: 12px; margin-bottom: 10px;
+    padding: 12px; border: 1px solid #E8C968; border-radius: 12px;
+    background: var(--mcd-gold-soft);
+  }
+  .instant-copy { flex: 1; min-width: 0; }
+  .instant-copy strong { display: block; font-size: 13px; margin-bottom: 3px; }
+  .instant-copy span { display: block; color: var(--claude-muted); font-size: 11px; line-height: 1.5; }
+  .surprise-btn {
+    flex: 0 0 auto; padding: 9px 12px; border: none; border-radius: 9px; cursor: pointer;
+    background: var(--mcd-red); color: #FAF8F4; font: 700 12px var(--font-sans);
+    box-shadow: 0 2px 0 rgba(0,0,0,.10);
+  }
+  .surprise-btn:hover { transform: translateY(-1px); }
   .import-bar { display: flex; gap: 8px; margin-bottom: 10px; }
   .import-main-btn {
-    flex: 1; padding: 10px 14px; border-radius: 10px; cursor: pointer;
-    background: var(--mcd-red); color: #FAF8F4; border: none;
-    font-weight: 700; font-size: 13px; font-family: var(--font-sans);
-    box-shadow: 0 2px 0 rgba(0,0,0,.10); transition: transform .1s;
-  }
-  .import-main-btn:hover { transform: translateY(-1px); }
-  .import-alt-btn {
-    padding: 10px 12px; border-radius: 10px; cursor: pointer;
+    flex: 1; padding: 9px 12px; border-radius: 10px; cursor: pointer;
     background: transparent; color: var(--claude-muted);
-    border: 1.5px dashed var(--claude-border-strong); font-size: 12px; font-weight: 600;
+    border: 1.5px dashed var(--claude-border-strong);
+    font-weight: 600; font-size: 12px; font-family: var(--font-sans);
+  }
+  .import-main-btn:hover { border-color: var(--mcd-gold); color: #9A7100; }
+  .import-alt-btn {
+    width: 100%; padding: 8px 10px; border-radius: 8px; cursor: pointer;
+    background: transparent; color: var(--claude-muted);
+    border: 1px dashed var(--claude-border-strong); font-size: 11px; font-weight: 600;
+    margin-top: 8px;
   }
   .import-alt-btn:hover { border-color: var(--mcd-gold); color: #B8860B; }
   .import-panel {
@@ -786,21 +801,28 @@
         <span class="pill-tag" id="kcalBadge">993 kcal · ¥46.0</span>
       </div>
 
+      <div class="instant-play-bar">
+        <div class="instant-copy">
+          <strong>只是来玩？不用订单，直接开始。</strong>
+          <span>已经装好一份夜宵；选心情、点播放就能听。</span>
+        </div>
+        <button class="surprise-btn" id="surpriseMeBtn">🎁 换一餐</button>
+      </div>
       <div class="import-bar">
-        <button class="import-main-btn" id="importOrderBtn">📋 导入我的订单</button>
-        <button class="import-alt-btn" id="pasteJsonBtn">粘贴 JSON</button>
+        <button class="import-main-btn" id="importOrderBtn" aria-expanded="false" aria-controls="importPanel">📋 有真实订单？导入（可选）</button>
       </div>
       <div class="import-panel hidden" id="importPanel">
+        <div class="imp-hint" id="importHint" style="margin-bottom:8px">只读拉取你的历史订单；不影响上面的自由玩法。</div>
         <div class="imp-row">
-          <input class="imp-token" id="mcpTokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="MCD MCP Token（选填，留空列出演示订单）">
-          <button class="imp-fetch" id="fetchOrdersBtn">拉取</button>
+          <input class="imp-token" id="mcpTokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="MCD MCP Token（仅用于本次拉取）">
+          <button class="imp-fetch" id="fetchOrdersBtn">拉取订单</button>
         </div>
         <div class="imp-list" id="importOrderList"></div>
-        <div class="imp-hint" id="importHint">有 Token 可拉取真实订单；没有就直接在下面选一餐。</div>
-      </div>
-      <div class="import-panel hidden" id="pastePanel">
-        <textarea class="imp-paste" id="pasteJsonArea" placeholder='粘贴 order-list / query-order 的返回 JSON（含 "## Original Response" 的 Markdown 原文也行）'></textarea>
-        <button class="imp-fetch" id="parseJsonBtn">解析并导入</button>
+        <button class="import-alt-btn" id="pasteJsonBtn" aria-expanded="false" aria-controls="pastePanel">高级：粘贴订单 JSON</button>
+        <div class="hidden" id="pastePanel" style="margin-top:8px">
+          <textarea class="imp-paste" id="pasteJsonArea" placeholder='粘贴 order-list / query-order 的返回 JSON（含 "## Original Response" 的 Markdown 原文也行）'></textarea>
+          <button class="imp-fetch" id="parseJsonBtn">解析并导入</button>
+        </div>
       </div>
 
       <div class="group-label">
@@ -873,7 +895,7 @@
     <!-- Top: Turntable Stage -->
     <div class="turntable-card">
       <div class="stage-topbar">
-        <div class="stage-title" id="stageTitle">等一顿饭变成歌…</div>
+        <div class="stage-title" id="stageTitle">八音盒已就位 · 点播放就能听</div>
         <div class="stage-controls">
           <button class="ghost-btn gold" id="soloJingleBtn">🎵 Ba-Da-Ba</button>
           <button class="ghost-btn" id="explodeBtn">🍔 分层</button>
@@ -923,7 +945,7 @@
             <div class="dt-m-logo">M</div>
             <div class="dt-title">
               <h3 id="dtSongTitle">《深夜高新南的13块9温柔》</h3>
-              <p id="dtSerial">ORDER #MCD-0248-42 · 麦当劳深圳高新南一道餐厅</p>
+              <p id="dtSerial">ORDER #DEMO-NIGHT · 深夜八音盒厨房 · 虚构 (#DEMO)</p>
             </div>
           </div>
           <span class="pill-tag" id="dtEggBadge">🌙 24h深夜留灯彩蛋</span>
@@ -958,7 +980,7 @@
             <div style="font-size:10px">McDONALD'S MCP × YuE THERMAL POS</div>
           </div>
           <div class="th-divider"></div>
-          <div class="th-row"><span id="thStore">门店: 麦当劳深圳高新南一道餐厅</span><span id="thCode">#1900248</span></div>
+          <div class="th-row"><span id="thStore">门店: 深夜八音盒厨房 · 虚构</span><span id="thCode">#DEMO</span></div>
           <div class="th-row"><span id="thOrder">单号: MCD-0248-42</span><span id="thTime">2026-10-23 23:42</span></div>
           <div class="th-row"><span id="thMood">大人心情: 🌧️ 有点 Down (4★)</span><span id="thKcal">670 kcal</span></div>
           <div class="th-divider"></div>
@@ -1161,11 +1183,11 @@ const STAR_DESCRIPTIONS = {
 };
 
 const ORDER_PRESETS = {
-  order_night:   { orderNo: "MCD-0248-42", storeCode: "1900248", storeName: "麦当劳深圳高新南一道餐厅", time: "2026-10-23 23:42", burger: "double_cheese", sides: ["nuggets", "fries"], drinks: ["zero_coke"], mood: "down", stars: 4 },
-  order_bigmac:  { orderNo: "MCD-0512-18", storeCode: "1100512", storeName: "麦当劳北京望京SOHO餐厅", time: "2026-10-23 12:30", burger: "bigmac", sides: ["fries"], drinks: ["coke"], mood: "happy", stars: 5 },
-  order_spicy:   { orderNo: "MCD-0601-88", storeCode: "5100601", storeName: "麦当劳成都春熙路餐厅", time: "2026-10-23 20:15", burger: "mcspicy", sides: ["wings", "fries"], drinks: ["mcflurry"], mood: "happy", stars: 4 },
-  order_morning: { orderNo: "MCD-0319-07", storeCode: "2000319", storeName: "麦当劳广州天河城餐厅", time: "2026-10-23 08:15", burger: "griddle", sides: ["hashbrown"], drinks: ["americano"], mood: "numb", stars: 3 },
-  order_gd:      { orderNo: "MCD-0882-99", storeCode: "2100882", storeName: "麦当劳上海静安寺旗舰餐厅", time: "2026-10-23 19:20", burger: "dragon_burger", sides: ["gd_box"], drinks: ["ash_cone"], mood: "happy", stars: 5 }
+  order_night:   { orderNo: "DEMO-NIGHT", storeCode: "DEMO", storeName: "深夜八音盒厨房 · 虚构", time: "今晚 · 自由搭配", burger: "double_cheese", sides: ["nuggets", "fries"], drinks: ["zero_coke"], mood: "down", stars: 4 },
+  order_bigmac:  { orderNo: "DEMO-BIGMAC", storeCode: "DEMO", storeName: "开心八音盒厨房 · 虚构", time: "今天 · 自由搭配", burger: "bigmac", sides: ["fries"], drinks: ["coke"], mood: "happy", stars: 5 },
+  order_spicy:   { orderNo: "DEMO-SPICY", storeCode: "DEMO", storeName: "热辣八音盒厨房 · 虚构", time: "今天 · 自由搭配", burger: "mcspicy", sides: ["wings", "fries"], drinks: ["mcflurry"], mood: "happy", stars: 4 },
+  order_morning: { orderNo: "DEMO-MORNING", storeCode: "DEMO", storeName: "早安八音盒厨房 · 虚构", time: "今早 · 自由搭配", burger: "griddle", sides: ["hashbrown"], drinks: ["americano"], mood: "numb", stars: 3 },
+  order_gd:      { orderNo: "DEMO-DRAGON", storeCode: "DEMO", storeName: "限定八音盒厨房 · 虚构", time: "此刻 · 自由搭配", burger: "dragon_burger", sides: ["gd_box"], drinks: ["ash_cone"], mood: "happy", stars: 5 }
 };
 
 let curOrder = { ...ORDER_PRESETS.order_night };
@@ -2743,7 +2765,7 @@ function drawMealStage() {
 }
 
 /**
- * MCP ORDER IMPORT — order-list 在线拉取 / 粘贴 JSON / 演示订单，全部只读
+ * MCP ORDER IMPORT — 可选真实订单拉取 / 高级 JSON 导入；普通玩法无需订单
  */
 const MCP_ENDPOINT = "https://mcp.mcd.cn";
 
@@ -2872,7 +2894,9 @@ function applyImportedOrder(ord) {
   if (map.sides.length || map.drinks.length || map.extras.length) showMoreFood(true);
   renderAllControlsAndReceipts();
   document.getElementById("importPanel").classList.add("hidden");
+  document.getElementById("importOrderBtn").setAttribute("aria-expanded", "false");
   document.getElementById("pastePanel").classList.add("hidden");
+  document.getElementById("pasteJsonBtn").setAttribute("aria-expanded", "false");
   document.getElementById("stageTitle").textContent = `✅ 已导入订单 ${ord.orderNo} · ${ord.storeName}`;
   playBaDaBaBaBa();
 }
@@ -2925,7 +2949,8 @@ async function fetchMcpOrders() {
   const token = document.getElementById("mcpTokenInput").value.trim();
   const hint = document.getElementById("importHint");
   if (!token) {
-    renderImportList(demoOrders(), "演示订单（未填 Token）——点一条直接填满餐盘");
+    hint.textContent = "只是想玩的话不用 Token，直接关闭这里选餐即可；要拉真实订单再输入 Token。";
+    document.getElementById("mcpTokenInput").focus();
     return;
   }
   hint.textContent = "⏳ 正在连接 mcp.mcd.cn（只读 order-list）…";
@@ -2967,12 +2992,11 @@ async function fetchMcpOrders() {
       renderImportList(orders, `✅ MCP order-list · ${orders.length} 条真实订单`);
       hint.textContent = "只读调用 order-list，未触碰任何下单/出餐接口。";
     } else {
-      renderImportList(demoOrders(), "演示订单");
-      hint.textContent = "⚠️ 返回里没解析到订单（Token 名下可能暂无订单），先列出演示订单。";
+      renderImportList([], "MCP order-list");
+      hint.textContent = "返回里没有可导入的订单；你的 Token 名下可能暂无订单。关闭这里仍可自由选餐。";
     }
   } catch (err) {
-    renderImportList(demoOrders(), "演示订单");
-    hint.textContent = "❌ 浏览器直连失败（可能是 CORS/网络）。请按 README 的真实订单步骤，用脚本导出后粘贴。" + (err && err.message ? "（" + err.message + "）" : "");
+    hint.textContent = "浏览器直连失败（可能是 CORS/网络）。可展开下方高级入口，按 README 用脚本导出后导入。" + (err && err.message ? "（" + err.message + "）" : "");
   }
 }
 
@@ -2998,19 +3022,39 @@ function showMoreFood(force) {
 }
 
 // Event Listeners
+let surpriseIndex = 0;
+document.getElementById("surpriseMeBtn").addEventListener("click", () => {
+  const keys = Object.keys(ORDER_PRESETS);
+  surpriseIndex = (surpriseIndex + 1) % keys.length;
+  const p = ORDER_PRESETS[keys[surpriseIndex]];
+  curOrder = { ...p };
+  selectedBurger = p.burger;
+  selectedSides = new Set(p.sides);
+  selectedDrinks = new Set(p.drinks);
+  currentMood = p.mood;
+  moodStars = p.stars;
+  document.getElementById("importPanel").classList.add("hidden");
+  document.getElementById("importOrderBtn").setAttribute("aria-expanded", "false");
+  document.getElementById("pastePanel").classList.add("hidden");
+  document.getElementById("pasteJsonBtn").setAttribute("aria-expanded", "false");
+  showMoreFood(true);
+  renderAllControlsAndReceipts();
+  document.getElementById("stageTitle").textContent = `🎁 换好了：${getBurger().name} · 选心情或直接播放`;
+  if (isPlaying) startSongPlayback();
+  else playBaDaBaBaBa();
+});
 document.getElementById("importOrderBtn").addEventListener("click", () => {
   const p = document.getElementById("importPanel");
-  document.getElementById("pastePanel").classList.add("hidden");
   const opening = p.classList.contains("hidden");
   p.classList.toggle("hidden");
-  if (opening && !document.getElementById("importOrderList").children.length) {
-    renderImportList(demoOrders(), "演示订单（未连 MCP 时使用）——点一条直接填满餐盘");
-  }
+  document.getElementById("importOrderBtn").setAttribute("aria-expanded", String(opening));
 });
 document.getElementById("fetchOrdersBtn").addEventListener("click", fetchMcpOrders);
 document.getElementById("pasteJsonBtn").addEventListener("click", () => {
-  document.getElementById("importPanel").classList.add("hidden");
-  document.getElementById("pastePanel").classList.toggle("hidden");
+  const p = document.getElementById("pastePanel");
+  const opening = p.classList.contains("hidden");
+  p.classList.toggle("hidden");
+  document.getElementById("pasteJsonBtn").setAttribute("aria-expanded", String(opening));
 });
 document.getElementById("parseJsonBtn").addEventListener("click", parsePastedJson);
 document.getElementById("moreFoodToggle").addEventListener("click", () => showMoreFood());
