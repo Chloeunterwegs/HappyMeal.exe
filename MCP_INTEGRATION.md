@@ -11,23 +11,24 @@
 | 真实运行链使用的 Tool | `order-list` |
 | 权限边界 | 只读历史订单；不执行任何写操作 |
 
-`order-list` 用于查询近期到店或外送历史订单。项目不会把静态营养数据、活动快照或合成预设描述为实时 MCP 调用结果。
+`order-list` 用于查询近期到店或外送历史订单。项目不会把活动快照或合成预设描述为实时 MCP 调用结果。
 
 ## 2. 调用流程
 
-推荐主流程由 `scripts/mcp_engine.py --live-order-list` 完成：
+用户主流程由浏览器完成：
 
-1. 从环境变量 `MCD_MCP_TOKEN` 读取 Token。
-2. 发送 `initialize`，协商协议版本 `2025-06-18` 并保存服务端返回的 Session ID。
-3. 发送 `notifications/initialized`。
-4. 发送 `tools/call`，Tool 为 `order-list`，参数为空对象。
+1. 用户展开真实订单导入，在密码框中输入自己的 Token。
+2. 页面发送 `initialize`，协商协议版本 `2025-06-18` 并保存服务端返回的 Session ID。
+3. 页面发送 `notifications/initialized`。
+4. 页面发送 `tools/call`，Tool 为 `order-list`，参数为空对象。
 5. 解析 JSON 或 SSE 响应，再从 `result.content[].text` 中提取业务内容。
 6. 若内容含 `## Original Response`，解析该标记之后的 JSON。
-7. 从历史订单中提取原始订单记录，导出到用户指定的本地 JSON 文件。
-8. 用户在页面粘贴该文件内容；前端规范化订单、拆分套餐单品并映射为餐品。
-9. 用户选择心情与星级后，`compileSongScore()` 生成乐谱，同步驱动动画、实时播放和 WAV 渲染。
+7. 前端规范化订单、拆分套餐单品并映射为餐品，用户选择一条订单导入。
+8. 用户选择心情与星级后，`compileSongScore()` 生成音符事件，用于动画、实时播放和 WAV 渲染。
 
-浏览器直连路径使用相同的初始化与只读调用顺序，但可能受到 CORS 或网络策略限制；失败时使用上述脚本导出流程。
+浏览器直连可能受到 CORS、网络或服务端策略影响；失败时页面会明确提示，不会用模拟订单冒充真实返回。
+
+`scripts/mcp_engine.py --live-order-list` 提供相同的只读调用顺序，供开发者从本机导出并核验原始响应；导出的文件不再用于页面导入。
 
 ## 3. 关键数据结构
 

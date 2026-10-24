@@ -14,58 +14,31 @@
         {
           "name": "双层吉士汉堡",
           "qty": 1,
-          "price": 13.9,
-          "kcal": 440,
-          "protein": 25.0,
-          "fat": 23.0,
-          "carbs": 32.0,
-          "category": "burger"
+          "price": 13.9
         },
         {
           "name": "麦乐鸡(5块)",
           "qty": 1,
-          "price": 0.0,
-          "kcal": 230,
-          "protein": 13.0,
-          "fat": 14.0,
-          "carbs": 13.0,
-          "category": "nuggets"
+          "price": 0.0
         },
         {
           "name": "薯条(中)",
           "qty": 1,
-          "price": 9.0,
-          "kcal": 330,
-          "protein": 4.0,
-          "fat": 16.0,
-          "carbs": 42.0,
-          "category": "fries"
+          "price": 9.0
         },
         {
           "name": "无糖可口可乐中杯",
           "qty": 1,
-          "price": 0.0,
-          "kcal": 0,
-          "protein": 0.0,
-          "fat": 0.0,
-          "carbs": 0.0,
-          "category": "drink"
+          "price": 0.0
         }
       ]
-    },
-    "nutrition": {
-      "total_kcal": 1000,
-      "total_protein": 42.0,
-      "total_fat": 53.0,
-      "total_carbs": 87.0,
-      "focus_minutes": 22
     },
     "store_stamp": {
       "serial_no": "HM-DEMO-1023-48F6",
       "store_code": "DEMO",
       "store_name": "深夜八音盒厨房（模拟）",
       "order_type": "到店取餐",
-      "shift_code": "NIGHT-24H",
+      "shift_code": "NIGHT",
       "ambience": "深夜留灯 · Lo-Fi 与窗外微雨",
       "musical_key": "F Major Pentatonic",
       "root_hz": 174.61,
@@ -91,7 +64,7 @@
       {
         "id": "NIGHT_SANCTUARY",
         "badge": "🌙 深夜留灯 · 夜间主题",
-        "title": "深夜 24 小时门店陪伴彩蛋",
+        "title": "深夜陪伴主题彩蛋",
         "desc": "22:00 后进店/点单触发。自动注入温暖黑胶底噪与慢速 Lo-Fi 滤波：那盏亮着的 M 字灯陪你改完最后一个 Bug。",
         "synth_mod": {
           "theme": "midnight_neon",
@@ -102,8 +75,8 @@
       {
         "id": "CODER_1024",
         "badge": "👾 1024 程序员节 · 8-Bit 芯片彩蛋",
-        "title": "1024 程序员节 × 零卡续命彩蛋",
-        "desc": "检测到程序员高频特征（0 kcal 无糖可乐 + 随心配）！解锁红白机 Chiptune 方波主音与二进制脉冲视觉。",
+        "title": "1024 程序员节 × 无糖可乐彩蛋",
+        "desc": "检测到无糖可乐或 1024 单号元素，触发本地创作的 Chiptune 方波主题。",
         "synth_mod": {
           "theme": "cyber_1024",
           "extra_riff": "chiptune_1024",
@@ -165,41 +138,19 @@
         {
           "name": "龙焰鸡腿堡",
           "qty": 1,
-          "price": 21.0,
-          "kcal": 540,
-          "protein": 24.0,
-          "fat": 28.0,
-          "carbs": 47.0,
-          "category": "burger"
+          "price": 21.0
         },
         {
           "name": "韩式辣椒黄油风味鸡薯盒",
           "qty": 1,
-          "price": 15.9,
-          "kcal": 610,
-          "protein": 22.0,
-          "fat": 34.0,
-          "carbs": 54.0,
-          "category": "nuggets"
+          "price": 15.9
         },
         {
           "name": "蓝莓爆爆珠麦旋风",
           "qty": 1,
-          "price": 8.0,
-          "kcal": 320,
-          "protein": 5.5,
-          "fat": 9.5,
-          "carbs": 53.0,
-          "category": "drink"
+          "price": 8.0
         }
       ]
-    },
-    "nutrition": {
-      "total_kcal": 1470,
-      "total_protein": 51.5,
-      "total_fat": 71.5,
-      "total_carbs": 154.0,
-      "focus_minutes": 32
     },
     "store_stamp": {
       "serial_no": "HM-DEMO-1023-2137",
@@ -249,17 +200,6 @@
           "theme": "ash_silver",
           "extra_riff": "crystal_bell",
           "bpm_boost": 4
-        }
-      },
-      {
-        "id": "CALORIE_OVERDRIVE",
-        "badge": "🔥 千卡核弹 · 安格斯厚牛失真",
-        "title": "高能多巴胺冲击（本单 1470 kcal）",
-        "desc": "触发 list-nutrition-foods 热量榜首「安格斯厚牛 / 千卡大餐」！开启 Analog Warm Overdrive 饱和重低音。",
-        "synth_mod": {
-          "theme": "lava_red",
-          "extra_riff": "acid_overdrive",
-          "bpm_boost": 12
         }
       }
     ],
@@ -317,41 +257,19 @@
         {
           "name": "巨无霸",
           "qty": 1,
-          "price": 24.0,
-          "kcal": 513,
-          "protein": 26.0,
-          "fat": 26.0,
-          "carbs": 43.0,
-          "category": "burger"
+          "price": 24.0
         },
         {
           "name": "薯条(中)",
           "qty": 1,
-          "price": 6.0,
-          "kcal": 330,
-          "protein": 4.0,
-          "fat": 16.0,
-          "carbs": 42.0,
-          "category": "fries"
+          "price": 6.0
         },
         {
           "name": "灰焰圆筒",
           "qty": 1,
-          "price": 6.0,
-          "kcal": 185,
-          "protein": 4.0,
-          "fat": 6.5,
-          "carbs": 28.0,
-          "category": "drink"
+          "price": 6.0
         }
       ]
-    },
-    "nutrition": {
-      "total_kcal": 1028,
-      "total_protein": 34.0,
-      "total_fat": 48.5,
-      "total_carbs": 113.0,
-      "focus_minutes": 22
     },
     "store_stamp": {
       "serial_no": "HM-DEMO-1023-E564",
@@ -447,41 +365,19 @@
         {
           "name": "枫糖风味厚松饼猪柳蛋堡",
           "qty": 1,
-          "price": 15.0,
-          "kcal": 525,
-          "protein": 21.0,
-          "fat": 25.0,
-          "carbs": 53.0,
-          "category": "burger"
+          "price": 15.0
         },
         {
           "name": "脆薯饼",
           "qty": 1,
-          "price": 0.0,
-          "kcal": 150,
-          "protein": 1.5,
-          "fat": 9.0,
-          "carbs": 15.0,
-          "category": "fries"
+          "price": 0.0
         },
         {
           "name": "冰美式小杯",
           "qty": 1,
-          "price": 6.5,
-          "kcal": 10,
-          "protein": 0.5,
-          "fat": 0.0,
-          "carbs": 2.0,
-          "category": "drink"
+          "price": 6.5
         }
       ]
-    },
-    "nutrition": {
-      "total_kcal": 685,
-      "total_protein": 23.0,
-      "total_fat": 34.0,
-      "total_carbs": 70.0,
-      "focus_minutes": 15
     },
     "store_stamp": {
       "serial_no": "HM-DEMO-1023-581C",
@@ -577,51 +473,24 @@
         {
           "name": "芝士双层安格斯厚牛堡",
           "qty": 1,
-          "price": 36.0,
-          "kcal": 1003,
-          "protein": 53.0,
-          "fat": 68.0,
-          "carbs": 42.0,
-          "category": "burger"
+          "price": 36.0
         },
         {
           "name": "薯条(大)",
           "qty": 1,
-          "price": 12.0,
-          "kcal": 480,
-          "protein": 6.0,
-          "fat": 23.0,
-          "carbs": 61.0,
-          "category": "fries"
+          "price": 12.0
         },
         {
           "name": "麦辣鸡翅(2块)",
           "qty": 1,
-          "price": 10.0,
-          "kcal": 260,
-          "protein": 16.0,
-          "fat": 17.0,
-          "carbs": 10.0,
-          "category": "nuggets"
+          "price": 10.0
         },
         {
           "name": "可口可乐(中)",
           "qty": 1,
-          "price": 0.0,
-          "kcal": 150,
-          "protein": 0.0,
-          "fat": 0.0,
-          "carbs": 39.0,
-          "category": "drink"
+          "price": 0.0
         }
       ]
-    },
-    "nutrition": {
-      "total_kcal": 1893,
-      "total_protein": 75.0,
-      "total_fat": 108.0,
-      "total_carbs": 152.0,
-      "focus_minutes": 42
     },
     "store_stamp": {
       "serial_no": "HM-DEMO-1023-062C",
@@ -650,19 +519,7 @@
         1
       ]
     },
-    "easter_eggs": [
-      {
-        "id": "CALORIE_OVERDRIVE",
-        "badge": "🔥 千卡核弹 · 安格斯厚牛失真",
-        "title": "高能多巴胺冲击（本单 1893 kcal）",
-        "desc": "触发 list-nutrition-foods 热量榜首「安格斯厚牛 / 千卡大餐」！开启 Analog Warm Overdrive 饱和重低音。",
-        "synth_mod": {
-          "theme": "lava_red",
-          "extra_riff": "acid_overdrive",
-          "bpm_boost": 12
-        }
-      }
-    ],
+    "easter_eggs": [],
     "campaigns_snapshot": [
       {
         "date": "2026-10-23",

@@ -52,7 +52,6 @@ def generate_escpos_bytes(ticket: dict) -> bytes:
         f" ● 汉堡: {ticket.get('burger', '双层吉士汉堡')}",
         f" ● 小食: {ticket.get('sides', '中薯条')}",
         f" ● 饮品: {ticket.get('drinks', '无糖可乐')}",
-        f" ● 模拟能量: {ticket.get('kcal', 770)} kcal",
         "-" * 32,
         ticket.get("message", ticket.get("lyrics", "小时候考满分才有的玩具，今晚这顿随心配替你补上。")),
         "-" * 32,
@@ -133,7 +132,6 @@ def main():
         "burger": "双层吉士汉堡",
         "sides": "中薯条 + 麦乐鸡",
         "drinks": "无糖可口可乐",
-        "kcal": 1000,
         "lyrics": "小时候考满分才有的开心乐园餐玩具，今晚这顿 13.9 的随心配替你补上。",
         "share_url": "https://chloeunterwegs.github.io/HappyMeal.exe/web/index.html#s=HMDEMO~double_cheese~down~4",
     }

@@ -3,13 +3,9 @@
 HappyMeal.exe — McDonald's China MCP Engine
 
 1. Connects to McDonald's China Official MCP Server (https://mcp.mcd.cn, Streamable HTTP)
-   using read-only tools:
-   - order-list, query-order, list-nutrition-foods, campaign-calendar,
-     available-coupons, mall-points-products, query-my-account, now-time-info
-2. Generates Store Acoustic Stamp (from storeCode + storeName + createTime, read-only,
-   zero intrusion into restaurant ordering/kitchen workflow).
-3. Evaluates 6 Real MCP Easter Eggs based on live October 2026 campaign-calendar & nutrition data.
-4. Outputs a local synthetic payload for the browser's Web Audio engine.
+   using only the read-only order-list tool for real-order export.
+2. Generates Store Acoustic Stamps and local creative themes from synthetic presets.
+3. Outputs local synthetic payloads for development; presets are not live MCP results.
 """
 
 import argparse
@@ -24,34 +20,6 @@ from datetime import datetime
 
 MCP_URL = os.environ.get("MCD_MCP_URL", "https://mcp.mcd.cn")
 PROTOCOL_VERSION = "2025-06-18"
-
-# Real nutrition database slice from McDonald's MCP `list-nutrition-foods` (158 items)
-REAL_NUTRITION_DB = {
-    "芝士双层安格斯厚牛堡": {"kcal": 1003, "protein": 53.0, "fat": 68.0, "carbs": 42.0, "sodium": 1420, "cat": "burger"},
-    "培根双层安格斯厚牛堡": {"kcal": 987, "protein": 54.0, "fat": 66.0, "carbs": 41.0, "sodium": 1510, "cat": "burger"},
-    "巨无霸": {"kcal": 513, "protein": 26.0, "fat": 26.0, "carbs": 43.0, "sodium": 920, "cat": "burger"},
-    "麦辣鸡腿汉堡": {"kcal": 485, "protein": 23.0, "fat": 24.0, "carbs": 44.0, "sodium": 1050, "cat": "burger"},
-    "板烧鸡腿堡": {"kcal": 415, "protein": 25.0, "fat": 16.0, "carbs": 42.0, "sodium": 980, "cat": "burger"},
-    "双层吉士汉堡": {"kcal": 440, "protein": 25.0, "fat": 23.0, "carbs": 32.0, "sodium": 1020, "cat": "burger"},
-    "双层深海鳕鱼堡": {"kcal": 485, "protein": 22.0, "fat": 24.0, "carbs": 44.0, "sodium": 890, "cat": "burger"},
-    "龙焰鸡腿堡": {"kcal": 540, "protein": 24.0, "fat": 28.0, "carbs": 47.0, "sodium": 1120, "cat": "burger"},
-    "枫糖风味厚松饼猪柳蛋堡": {"kcal": 525, "protein": 21.0, "fat": 25.0, "carbs": 53.0, "sodium": 960, "cat": "burger"},
-    "双层猪柳蛋麦满分": {"kcal": 513, "protein": 28.0, "fat": 30.0, "carbs": 31.0, "sodium": 1180, "cat": "burger"},
-    "薯条(中)": {"kcal": 330, "protein": 4.0, "fat": 16.0, "carbs": 42.0, "sodium": 240, "cat": "fries"},
-    "薯条(大)": {"kcal": 480, "protein": 6.0, "fat": 23.0, "carbs": 61.0, "sodium": 350, "cat": "fries"},
-    "脆薯饼": {"kcal": 150, "protein": 1.5, "fat": 9.0, "carbs": 15.0, "sodium": 310, "cat": "fries"},
-    "麦乐鸡(5块)": {"kcal": 230, "protein": 13.0, "fat": 14.0, "carbs": 13.0, "sodium": 480, "cat": "nuggets"},
-    "麦辣鸡翅(2块)": {"kcal": 260, "protein": 16.0, "fat": 17.0, "carbs": 10.0, "sodium": 520, "cat": "nuggets"},
-    "韩式辣椒黄油风味鸡薯盒": {"kcal": 610, "protein": 22.0, "fat": 34.0, "carbs": 54.0, "sodium": 1240, "cat": "nuggets"},
-    "香芋派": {"kcal": 240, "protein": 2.5, "fat": 12.0, "carbs": 30.0, "sodium": 190, "cat": "fries"},
-    "无糖可口可乐中杯": {"kcal": 0, "protein": 0.0, "fat": 0.0, "carbs": 0.0, "sodium": 25, "cat": "drink"},
-    "可口可乐(中)": {"kcal": 150, "protein": 0.0, "fat": 0.0, "carbs": 39.0, "sodium": 15, "cat": "drink"},
-    "冰美式小杯": {"kcal": 10, "protein": 0.5, "fat": 0.0, "carbs": 2.0, "sodium": 5, "cat": "drink"},
-    "浓浓黑巧(中)": {"kcal": 265, "protein": 6.0, "fat": 11.0, "carbs": 35.0, "sodium": 120, "cat": "drink"},
-    "灰焰圆筒": {"kcal": 185, "protein": 4.0, "fat": 6.5, "carbs": 28.0, "sodium": 75, "cat": "drink"},
-    "蓝莓爆爆珠麦旋风": {"kcal": 320, "protein": 5.5, "fat": 9.5, "carbs": 53.0, "sodium": 130, "cat": "drink"},
-    "奥利奥麦旋风": {"kcal": 280, "protein": 5.0, "fat": 9.0, "carbs": 45.0, "sodium": 140, "cat": "drink"},
-}
 
 # Real October 2026 Campaigns from McDonald's MCP `campaign-calendar`
 REAL_OCT_2026_CAMPAIGNS = [
@@ -284,7 +252,7 @@ def find_order_records(payload):
 
 
 def export_live_orders(out_path):
-    """Call only order-list and export its raw orders for the local web importer."""
+    """Call only order-list and export raw orders for local development inspection."""
     client = McpClient()
     client.initialize()
     response = client.call_tool("order-list")
@@ -332,7 +300,7 @@ def compute_store_acoustic_stamp(store_code: str, store_name: str, create_time: 
         ambience = "傍晚霓虹招牌 · Funk 律动合成器"
         base_bpm = 110
     else:
-        shift_code = "NIGHT-24H"
+        shift_code = "NIGHT"
         ambience = "深夜留灯 · Lo-Fi 与窗外微雨"
         base_bpm = 88
 
@@ -352,8 +320,8 @@ def compute_store_acoustic_stamp(store_code: str, store_name: str, create_time: 
     }
 
 
-def detect_easter_eggs(order: dict, total_kcal: int, campaigns: list):
-    """Evaluate 6 real MCP Easter eggs based on order items, nutrition, time & campaign-calendar."""
+def detect_easter_eggs(order: dict):
+    """Evaluate five local creative themes from synthetic order items and time."""
     item_names = " ".join(i["name"] for i in order.get("items", []))
     dt = datetime.strptime(order["createTime"], "%Y-%m-%d %H:%M:%S")
     eggs = []
@@ -393,28 +361,18 @@ def detect_easter_eggs(order: dict, total_kcal: int, campaigns: list):
         eggs.append({
             "id": "NIGHT_SANCTUARY",
             "badge": "🌙 深夜留灯 · 夜间主题",
-            "title": "深夜 24 小时门店陪伴彩蛋",
+            "title": "深夜陪伴主题彩蛋",
             "desc": "22:00 后进店/点单触发。自动注入温暖黑胶底噪与慢速 Lo-Fi 滤波：那盏亮着的 M 字灯陪你改完最后一个 Bug。",
             "synth_mod": {"theme": "midnight_neon", "extra_riff": "lofi_vinyl", "bpm_boost": -8},
         })
 
-    # 5. Calorie Overdrive (Angus / 1350+ kcal)
-    if total_kcal >= 1350 or "安格斯" in item_names:
-        eggs.append({
-            "id": "CALORIE_OVERDRIVE",
-            "badge": "🔥 千卡核弹 · 安格斯厚牛失真",
-            "title": f"高能多巴胺冲击（本单 {total_kcal} kcal）",
-            "desc": "触发 list-nutrition-foods 热量榜首「安格斯厚牛 / 千卡大餐」！开启 Analog Warm Overdrive 饱和重低音。",
-            "synth_mod": {"theme": "lava_red", "extra_riff": "acid_overdrive", "bpm_boost": 12},
-        })
-
-    # 6. 1024 Programmer's Day / Zero Sugar Coder
+    # 5. 1024 Programmer's Day / Zero Sugar Coder
     if "无糖" in item_names or "零度" in item_names or "1024" in order.get("orderId", ""):
         eggs.append({
             "id": "CODER_1024",
             "badge": "👾 1024 程序员节 · 8-Bit 芯片彩蛋",
-            "title": "1024 程序员节 × 零卡续命彩蛋",
-            "desc": "检测到程序员高频特征（0 kcal 无糖可乐 + 随心配）！解锁红白机 Chiptune 方波主音与二进制脉冲视觉。",
+            "title": "1024 程序员节 × 无糖可乐彩蛋",
+            "desc": "检测到无糖可乐或 1024 单号元素，触发本地创作的 Chiptune 方波主题。",
             "synth_mod": {"theme": "cyber_1024", "extra_riff": "chiptune_1024", "bpm_boost": 6},
         })
 
@@ -424,46 +382,13 @@ def detect_easter_eggs(order: dict, total_kcal: int, campaigns: list):
 def build_toy_payload(order_key="late_night_coder", custom_order=None):
     order = custom_order or PRESET_ORDERS.get(order_key, PRESET_ORDERS["late_night_coder"])
 
-    enriched_items = []
-    total_kcal = 0
-    total_protein = 0.0
-    total_fat = 0.0
-    total_carbs = 0.0
-
-    for item in order["items"]:
-        name = item["name"]
-        qty = item.get("qty", 1)
-        nut = REAL_NUTRITION_DB.get(name, {"kcal": 250, "protein": 10.0, "fat": 10.0, "carbs": 25.0, "sodium": 400, "cat": "burger"})
-        item_kcal = int(nut["kcal"] * qty)
-        total_kcal += item_kcal
-        total_protein += nut["protein"] * qty
-        total_fat += nut["fat"] * qty
-        total_carbs += nut["carbs"] * qty
-        enriched_items.append({
-            **item,
-            "kcal": item_kcal,
-            "protein": round(nut["protein"] * qty, 1),
-            "fat": round(nut["fat"] * qty, 1),
-            "carbs": round(nut["carbs"] * qty, 1),
-            "category": nut["cat"],
-        })
-
-    nutrition_summary = {
-        "total_kcal": total_kcal,
-        "total_protein": round(total_protein, 1),
-        "total_fat": round(total_fat, 1),
-        "total_carbs": round(total_carbs, 1),
-        "focus_minutes": max(15, int(total_kcal / 45)),
-    }
-
     stamp = compute_store_acoustic_stamp(
         order["storeCode"], order["storeName"], order["createTime"], order["orderType"]
     )
-    eggs = detect_easter_eggs(order, total_kcal, REAL_OCT_2026_CAMPAIGNS)
+    eggs = detect_easter_eggs(order)
 
     return {
-        "order": {**order, "items": enriched_items},
-        "nutrition": nutrition_summary,
+        "order": order,
         "store_stamp": stamp,
         "easter_eggs": eggs,
         "campaigns_snapshot": REAL_OCT_2026_CAMPAIGNS[:6],
@@ -496,7 +421,7 @@ def main():
     print(f"Generated {len(bundle)} toy payloads -> {out_path}")
     for k, v in bundle.items():
         eggs_str = ", ".join(e["id"] for e in v["easter_eggs"])
-        print(f"  [{k}] {v['store_stamp']['serial_no']} | {v['nutrition']['total_kcal']} kcal | {v['store_stamp']['musical_key']} | Eggs: {eggs_str}")
+        print(f"  [{k}] {v['store_stamp']['serial_no']} | {v['store_stamp']['musical_key']} | Eggs: {eggs_str}")
 
 
 if __name__ == "__main__":

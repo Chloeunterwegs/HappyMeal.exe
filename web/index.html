@@ -725,13 +725,6 @@
     font-weight: 600; font-size: 12px; font-family: var(--font-sans);
   }
   .import-main-btn:hover { border-color: var(--mcd-gold); color: #9A7100; }
-  .import-alt-btn {
-    width: 100%; padding: 8px 10px; border-radius: 8px; cursor: pointer;
-    background: transparent; color: var(--claude-muted);
-    border: 1px dashed var(--claude-border-strong); font-size: 11px; font-weight: 600;
-    margin-top: 8px;
-  }
-  .import-alt-btn:hover { border-color: var(--mcd-gold); color: #B8860B; }
   .import-panel {
     background: var(--claude-oat); border: 1px solid var(--claude-border);
     border-radius: 12px; padding: 10px; margin-bottom: 12px;
@@ -757,11 +750,6 @@
   .io-store { font-weight: 700; }
   .io-items { display: block; color: var(--claude-muted); margin-top: 2px; }
   .imp-hint { font-size: 10.5px; color: var(--claude-muted); line-height: 1.55; }
-  .imp-paste {
-    width: 100%; height: 84px; padding: 8px 10px; border-radius: 8px;
-    border: 1px solid var(--claude-border-strong); background: #FFFDF7;
-    font-size: 11px; font-family: var(--font-mono); resize: vertical; margin-bottom: 8px; color: var(--claude-ink);
-  }
   .more-food-toggle {
     width: 100%; padding: 8px; border-radius: 10px; cursor: pointer;
     border: 1.5px dashed var(--claude-border-strong); background: transparent;
@@ -771,7 +759,7 @@
 
   @media (max-width: 880px) {
     .workspace { grid-template-columns: minmax(0, 1fr); }
-    .left-panel, .right-panel, .c-card, .import-panel, .imp-row, .imp-token, .imp-paste { min-width: 0; max-width: 100%; }
+    .left-panel, .right-panel, .c-card, .import-panel, .imp-row, .imp-token { min-width: 0; max-width: 100%; }
     .claude-header h1 { font-size: 22px; }
     body { padding: 20px 12px 48px; }
     .turntable-card, .receipt-center-card { padding: 12px; border-radius: 14px; }
@@ -781,7 +769,7 @@
     .sec-pill { padding: 4px 3px; font-size: 9.5px; border-radius: 6px; }
     .song-structure-bar { gap: 4px; margin-top: 8px; }
     .import-bar { flex-direction: column; }
-    .imp-token, .imp-paste { font-size: 16px; } /* avoid iOS focus zoom */
+    .imp-token { font-size: 16px; } /* avoid iOS focus zoom */
   }
 </style>
 </head>
@@ -799,7 +787,7 @@
     <div class="c-card">
       <div class="card-head">
         <h2>① 这顿吃了什么？</h2>
-        <span class="pill-tag" id="kcalBadge">模拟 1000 kcal · ¥48.9</span>
+        <span class="pill-tag" id="priceBadge">模拟 ¥48.9</span>
       </div>
 
       <div class="instant-play-bar">
@@ -819,11 +807,6 @@
           <button class="imp-fetch" id="fetchOrdersBtn">拉取订单</button>
         </div>
         <div class="imp-list" id="importOrderList"></div>
-        <button class="import-alt-btn" id="pasteJsonBtn" aria-expanded="false" aria-controls="pastePanel">高级：粘贴订单 JSON</button>
-        <div class="hidden" id="pastePanel" style="margin-top:8px">
-          <textarea class="imp-paste" id="pasteJsonArea" placeholder='粘贴 order-list / query-order 的返回 JSON（含 "## Original Response" 的 Markdown 原文也行）'></textarea>
-          <button class="imp-fetch" id="parseJsonBtn">解析并导入</button>
-        </div>
       </div>
 
       <div class="group-label">
@@ -845,7 +828,7 @@
         </div>
         <div class="item-grid" id="drinkGrid"></div>
       </div>
-      <div class="menu-data-note">价格与热量为创作用模拟值，不代表实时菜单、订单实付或官方营养数据。</div>
+      <div class="menu-data-note">价格为创作用模拟值，不代表实时菜单或订单实付。</div>
     </div>
 
     <!-- Step 2: Mood & 5-Star Arrangement Calibration -->
@@ -983,7 +966,7 @@
           <div class="th-divider"></div>
           <div class="th-row"><span id="thStore">门店: 深夜八音盒厨房 · 模拟</span><span id="thCode">#DEMO</span></div>
           <div class="th-row"><span id="thOrder">单号: DEMO-NIGHT</span><span id="thTime">今晚 · 自由搭配</span></div>
-          <div class="th-row"><span id="thMood">心情: 🌧️ 有点 Down (4★)</span><span id="thKcal">模拟 1000 kcal</span></div>
+          <div class="th-row"><span id="thMood">心情: 🌧️ 有点 Down (4★)</span></div>
           <div class="th-divider"></div>
           <div class="th-row"><span>餐品</span><span id="thItems">双层吉士堡 + 麦乐鸡(5块)/中薯条 + 无糖可乐</span></div>
           <div id="thLyrics" style="font-size:11px;line-height:1.5;padding:4px 0"></div>
@@ -1013,7 +996,7 @@
 const MENU_DB = {
   burgers: [
     {
-      id: "double_cheese", name: "双层吉士堡", emoji: "🧀", kcal: 440, price: 13.9, color: "#F0B429",
+      id: "double_cheese", name: "双层吉士堡", emoji: "🧀", price: 13.9, color: "#F0B429",
       rootHz: 220.0, // A3 / C4 warm register
       songTitle: "《13块9的双层吉士温柔》",
       layers: [
@@ -1032,7 +1015,7 @@ const MENU_DB = {
       lyricChorus: "小时候考满分才有的开心乐园餐玩具\n长大后一顿13块9的双层吉士替你找到"
     },
     {
-      id: "bigmac", name: "巨无霸", emoji: "🍔", kcal: 513, price: 25.0, color: "#C83328",
+      id: "bigmac", name: "巨无霸", emoji: "🍔", price: 25.0, color: "#C83328",
       rootHz: 196.0, // G3
       songTitle: "《双层巨无霸的黄金年代》",
       layers: [
@@ -1050,7 +1033,7 @@ const MENU_DB = {
       lyricChorus: "无论世界变得多快，第一口巨无霸永远和八岁那年一样笃定"
     },
     {
-      id: "mcspicy", name: "麦辣鸡腿堡", emoji: "🌶️", kcal: 485, price: 21.0, color: "#E6641C",
+      id: "mcspicy", name: "麦辣鸡腿堡", emoji: "🌶️", price: 21.0, color: "#E6641C",
       rootHz: 246.94, // B3
       songTitle: "《咔嚓酥脆的多巴胺烟花》",
       layers: [
@@ -1066,7 +1049,7 @@ const MENU_DB = {
       lyricChorus: "吃一口滚烫的麦辣鸡腿堡，让热辣的琶音替你把所有不痛快统统翻篇"
     },
     {
-      id: "gcbb", name: "板烧鸡腿堡", emoji: "🍗", kcal: 415, price: 22.0, color: "#1E7E4E",
+      id: "gcbb", name: "板烧鸡腿堡", emoji: "🍗", price: 22.0, color: "#1E7E4E",
       rootHz: 261.63, // C4
       songTitle: "《原块板烧的松弛午后》",
       layers: [
@@ -1081,7 +1064,7 @@ const MENU_DB = {
       lyricChorus: "不用追赶谁的节拍，面包层层咬合的温柔，这十五分钟只属于你自己"
     },
     {
-      id: "griddle", name: "枫糖厚松饼堡", emoji: "🥞", kcal: 525, price: 15.0, color: "#D9822B", limited: "早餐主题",
+      id: "griddle", name: "枫糖厚松饼堡", emoji: "🥞", price: 15.0, color: "#D9822B", limited: "早餐主题",
       rootHz: 233.08, // Bb3
       songTitle: "《早八枫糖厚松饼八音盒》",
       layers: [
@@ -1097,7 +1080,7 @@ const MENU_DB = {
       lyricChorus: "早八赶路的人别慌张，甜软的晨间八音盒正在为你慢慢充能"
     },
     {
-      id: "dragon_burger", name: "龙焰鸡腿堡", emoji: "🖤", kcal: 540, price: 21.0, color: "#7E3AF2", limited: "创作主题",
+      id: "dragon_burger", name: "龙焰鸡腿堡", emoji: "🖤", price: 21.0, color: "#7E3AF2", limited: "创作主题",
       rootHz: 220.0,
       songTitle: "《十月龙焰与缺瓣小雏菊》",
       layers: [
@@ -1113,20 +1096,20 @@ const MENU_DB = {
     }
   ],
   sides: [
-    { id: "fries", name: "中薯条", emoji: "🍟", kcal: 330, price: 12.0, color: "#F0B429" },
-    { id: "nuggets", name: "麦乐鸡(5块)", emoji: "🍗", kcal: 230, price: 14.0, color: "#E6641C" },
-    { id: "wings", name: "麦辣鸡翅", emoji: "🔥", kcal: 260, price: 13.0, color: "#C83328" },
-    { id: "taro_pie", name: "香芋派", emoji: "🥧", kcal: 240, price: 8.0, color: "#9C27B0" },
-    { id: "hashbrown", name: "脆薯饼", emoji: "🥔", kcal: 150, price: 7.0, color: "#D9822B" },
-    { id: "gd_box", name: "韩式鸡薯盒", emoji: "🖤", kcal: 610, price: 15.9, color: "#F0B429", limited: "创作主题" }
+    { id: "fries", name: "中薯条", emoji: "🍟", price: 12.0, color: "#F0B429" },
+    { id: "nuggets", name: "麦乐鸡(5块)", emoji: "🍗", price: 14.0, color: "#E6641C" },
+    { id: "wings", name: "麦辣鸡翅", emoji: "🔥", price: 13.0, color: "#C83328" },
+    { id: "taro_pie", name: "香芋派", emoji: "🥧", price: 8.0, color: "#9C27B0" },
+    { id: "hashbrown", name: "脆薯饼", emoji: "🥔", price: 7.0, color: "#D9822B" },
+    { id: "gd_box", name: "韩式鸡薯盒", emoji: "🖤", price: 15.9, color: "#F0B429", limited: "创作主题" }
   ],
   drinks: [
-    { id: "coke", name: "可口可乐", emoji: "🥤", kcal: 150, price: 9.0, color: "#C83328" },
-    { id: "zero_coke", name: "无糖可乐", emoji: "🧊", kcal: 0, price: 9.0, color: "#00ACC1" },
-    { id: "americano", name: "冰美式", emoji: "☕", kcal: 10, price: 9.9, color: "#795548" },
-    { id: "mcflurry", name: "奥利奥麦旋风", emoji: "🍦", kcal: 280, price: 12.0, color: "#5C6BC0" },
-    { id: "ash_cone", name: "灰焰圆筒", emoji: "🩶", kcal: 185, price: 6.0, color: "#78909C", limited: "创作主题" },
-    { id: "blueberry", name: "蓝莓爆珠旋风", emoji: "🫐", kcal: 320, price: 13.0, color: "#8E24AA", limited: "创作主题" }
+    { id: "coke", name: "可口可乐", emoji: "🥤", price: 9.0, color: "#C83328" },
+    { id: "zero_coke", name: "无糖可乐", emoji: "🧊", price: 9.0, color: "#00ACC1" },
+    { id: "americano", name: "冰美式", emoji: "☕", price: 9.9, color: "#795548" },
+    { id: "mcflurry", name: "奥利奥麦旋风", emoji: "🍦", price: 12.0, color: "#5C6BC0" },
+    { id: "ash_cone", name: "灰焰圆筒", emoji: "🩶", price: 6.0, color: "#78909C", limited: "创作主题" },
+    { id: "blueberry", name: "蓝莓爆珠旋风", emoji: "🫐", price: 13.0, color: "#8E24AA", limited: "创作主题" }
   ]
 };
 
@@ -2177,18 +2160,17 @@ function renderAllControlsAndReceipts() {
   });
   document.getElementById("arrangementHint").textContent = STAR_DESCRIPTIONS[moodStars];
 
-  // Compute totals & strings
-  let kcal = b.kcal;
+  // Compute simulated price and receipt labels
   let price = b.price;
   const sNames = [];
   const dNames = [];
-  MENU_DB.sides.forEach(s => { if (selectedSides.has(s.id)) { kcal += s.kcal; price += s.price; sNames.push(s.name); } });
-  MENU_DB.drinks.forEach(d => { if (selectedDrinks.has(d.id)) { kcal += d.kcal; price += d.price; dNames.push(d.name); } });
+  MENU_DB.sides.forEach(s => { if (selectedSides.has(s.id)) { price += s.price; sNames.push(s.name); } });
+  MENU_DB.drinks.forEach(d => { if (selectedDrinks.has(d.id)) { price += d.price; dNames.push(d.name); } });
 
   const starsStr = "★".repeat(moodStars) + "☆".repeat(5 - moodStars);
   const oneLiner = improviseLine(b, m);
 
-  document.getElementById("kcalBadge").textContent = `模拟 ${kcal} kcal · ¥${price.toFixed(1)}`;
+  document.getElementById("priceBadge").textContent = `模拟 ¥${price.toFixed(1)}`;
   document.getElementById("moodBadge").textContent = `${m.label} · ${starsStr}`;
 
   // Update Digital Collectible Ticket
@@ -2218,7 +2200,6 @@ function renderAllControlsAndReceipts() {
   document.getElementById("thOrder").textContent = `单号: ${curOrder.orderNo}`;
   document.getElementById("thTime").textContent = curOrder.time;
   document.getElementById("thMood").textContent = `心情: ${m.label} (${moodStars}★)`;
-  document.getElementById("thKcal").textContent = `模拟 ${kcal} kcal`;
   document.getElementById("thItems").textContent = `${b.name}${sNames.length ? " + " + sNames.join("/") : ""}${dNames.length ? " + " + dNames.join("/") : ""}${extrasStr ? " + " + extrasStr : ""}`;
   document.getElementById("thLyrics").textContent = oneLiner;
   document.getElementById("thermalQrBox").innerHTML = buildQrSvg(shareUrl, "#000000");
@@ -2444,10 +2425,6 @@ function drawMealStage() {
   const b = getBurger();
   const m = getMoodObj();
 
-  let kcal = b.kcal;
-  MENU_DB.sides.forEach(s => { if (selectedSides.has(s.id)) kcal += s.kcal; });
-  MENU_DB.drinks.forEach(d => { if (selectedDrinks.has(d.id)) kcal += d.kcal; });
-
   ctx.fillStyle = "#181715";
   ctx.fillRect(0, 0, w, h);
 
@@ -2480,7 +2457,7 @@ function drawMealStage() {
   ctx.fillStyle = "#EAE3D2";
   ctx.fillText(b.songTitle, w - 16, 22);
   ctx.fillStyle = "#F0B429";
-  ctx.fillText(`${m.label} ${moodStars}★ · ${m.bpm} BPM · 模拟 ${kcal} kcal`, w - 16, 38);
+  ctx.fillText(`${m.label} ${moodStars}★ · ${m.bpm} BPM`, w - 16, 38);
   ctx.textAlign = "left";
 
   if (isPlaying && songStep < songSection("intro").end) {
@@ -2718,7 +2695,7 @@ function drawMealStage() {
 }
 
 /**
- * MCP ORDER IMPORT — 可选真实订单拉取 / 高级 JSON 导入；普通玩法无需订单
+ * MCP ORDER IMPORT — 可选真实订单拉取；普通玩法无需订单
  */
 const MCP_ENDPOINT = "https://mcp.mcd.cn";
 
@@ -2861,14 +2838,12 @@ function applyImportedOrder(ord) {
   renderAllControlsAndReceipts();
   document.getElementById("importPanel").classList.add("hidden");
   document.getElementById("importOrderBtn").setAttribute("aria-expanded", "false");
-  document.getElementById("pastePanel").classList.add("hidden");
-  document.getElementById("pasteJsonBtn").setAttribute("aria-expanded", "false");
   document.getElementById("stageTitle").textContent = approximateMapping
     ? "✅ 订单已导入 · 餐品为近似映射"
     : `✅ 订单已导入 · ${ord.orderNo}`;
   document.getElementById("importHint").textContent = approximateMapping
-    ? "已按名称近似映射餐品；未识别项保留在小票，价格与热量仍为模拟值。"
-    : "餐品已按名称映射；价格与热量仍为模拟值，并非订单实付。";
+    ? "已按名称近似映射餐品；未识别项保留在小票，价格仍为模拟值。"
+    : "餐品已按名称映射；价格仍为模拟值，并非订单实付。";
   playBaDaBaBaBa();
 }
 
@@ -2903,17 +2878,6 @@ function renderImportList(orders, label) {
     el.addEventListener("click", () => applyImportedOrder(ord));
     box.appendChild(el);
   });
-}
-
-function demoOrders() {
-  return Object.values(ORDER_PRESETS).map(p => ({
-    orderNo: p.orderNo, storeCode: p.storeCode, storeName: p.storeName, time: p.time,
-    items: [
-      { name: (MENU_DB.burgers.find(b => b.id === p.burger) || {}).name },
-      ...p.sides.map(id => ({ name: (MENU_DB.sides.find(s => s.id === id) || {}).name })),
-      ...p.drinks.map(id => ({ name: (MENU_DB.drinks.find(d => d.id === id) || {}).name }))
-    ]
-  }));
 }
 
 async function fetchMcpOrders() {
@@ -2967,21 +2931,8 @@ async function fetchMcpOrders() {
       hint.textContent = "返回里没有可导入的订单；你的 Token 名下可能暂无订单。关闭这里仍可自由选餐。";
     }
   } catch (err) {
-    hint.textContent = "拉取失败（可能是网络、浏览器跨域限制、Token 状态或服务端响应）。可展开下方高级入口，使用本机脚本导出的 JSON。" + (err && err.message ? "（" + err.message + "）" : "");
+    hint.textContent = "拉取失败（可能是网络、浏览器跨域限制、Token 状态或服务端响应）。请检查后重试；不导入订单也可继续自由选餐。" + (err && err.message ? "（" + err.message + "）" : "");
   }
-}
-
-function parsePastedJson() {
-  const txt = document.getElementById("pasteJsonArea").value.trim();
-  if (!txt) return;
-  const obj = extractMcpJson(txt);
-  const orders = obj ? findOrders(obj).map(normalizeOrder) : [];
-  if (!orders.length) {
-    alert("没解析出订单——确认粘贴的是 order-list / query-order / presets_bundle 的输出。");
-    return;
-  }
-  document.getElementById("importPanel").classList.remove("hidden");
-  renderImportList(orders, `✅ 粘贴解析成功 · ${orders.length} 条订单`);
 }
 
 function showMoreFood(force) {
@@ -3006,8 +2957,6 @@ document.getElementById("surpriseMeBtn").addEventListener("click", () => {
   moodStars = p.stars;
   document.getElementById("importPanel").classList.add("hidden");
   document.getElementById("importOrderBtn").setAttribute("aria-expanded", "false");
-  document.getElementById("pastePanel").classList.add("hidden");
-  document.getElementById("pasteJsonBtn").setAttribute("aria-expanded", "false");
   showMoreFood(true);
   renderAllControlsAndReceipts();
   document.getElementById("stageTitle").textContent = `🎁 换好了：${getBurger().name} · 选心情或直接播放`;
@@ -3021,13 +2970,6 @@ document.getElementById("importOrderBtn").addEventListener("click", () => {
   document.getElementById("importOrderBtn").setAttribute("aria-expanded", String(opening));
 });
 document.getElementById("fetchOrdersBtn").addEventListener("click", fetchMcpOrders);
-document.getElementById("pasteJsonBtn").addEventListener("click", () => {
-  const p = document.getElementById("pastePanel");
-  const opening = p.classList.contains("hidden");
-  p.classList.toggle("hidden");
-  document.getElementById("pasteJsonBtn").setAttribute("aria-expanded", String(opening));
-});
-document.getElementById("parseJsonBtn").addEventListener("click", parsePastedJson);
 document.getElementById("moreFoodToggle").addEventListener("click", () => showMoreFood());
 
 document.querySelectorAll(".mood-card").forEach(mc => {
