@@ -1,0 +1,3148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HappyMeal.exe · 大人版开心乐园餐音乐盒 (Claude UI × McDonald's)</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍔</text></svg>">
+<style>
+  :root {
+    /* Claude UI Warm Editorial Palette x McDonald's Accents */
+    --claude-bg: #FAF8F4;
+    --claude-card: #FFFFFF;
+    --claude-oat: #F3EFE6;
+    --claude-border: #E5DFD2;
+    --claude-border-strong: #D2C9B8;
+    --claude-ink: #1F1E1B;
+    --claude-muted: #6E6A61;
+    --claude-Deep: #191816;
+    --mcd-red: #C83328;
+    --mcd-red-soft: #FDF2F1;
+    --mcd-gold: #F0B429;
+    --mcd-gold-soft: #FEF9EC;
+    --mcd-green: #1E7E4E;
+    --font-serif: 'Newsreader', 'Noto Serif SC', 'Songti SC', 'STSong', Georgia, serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Hiragino Sans GB', sans-serif;
+    --font-mono: 'SF Mono', 'JetBrains Mono', 'Menlo', monospace;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--claude-bg);
+    color: var(--claude-ink);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    padding: 32px 18px 64px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    line-height: 1.5;
+  }
+
+  /* Editorial Header (Claude UI Style) */
+  .claude-header {
+    text-align: center;
+    max-width: 720px;
+    margin-bottom: 28px;
+  }
+  .claude-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--claude-oat);
+    border: 1px solid var(--claude-border);
+    color: var(--claude-ink);
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 4px 12px;
+    border-radius: 99px;
+    margin-bottom: 12px;
+  }
+  .claude-badge .dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--mcd-red);
+  }
+  .claude-header h1 {
+    font-family: var(--font-serif);
+    font-size: 30px;
+    font-weight: 600;
+    color: var(--claude-ink);
+    letter-spacing: -0.3px;
+    text-wrap: balance;
+  }
+  .claude-header p {
+    font-size: 14px;
+    color: var(--claude-muted);
+    margin-top: 6px;
+  }
+
+  /* Main Two-Column Workspace */
+  .workspace {
+    width: 100%;
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: 410px 1fr;
+    gap: 24px;
+    align-items: start;
+  }
+  .hidden { display: none !important; }
+
+  .workspace.reel-mode {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+  }
+  .workspace.reel-mode .left-panel {
+    display: none;
+  }
+
+  /* Left Column: Clean Claude-style Cards */
+  .left-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .c-card {
+    background: var(--claude-card);
+    border: 1px solid var(--claude-border);
+    border-radius: 16px;
+    padding: 18px;
+    box-shadow: 0 2px 10px rgba(31, 30, 27, 0.03);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-head h2 {
+    font-family: var(--font-serif);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--claude-ink);
+  }
+  .pill-tag {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 6px;
+    background: var(--mcd-gold-soft);
+    color: #946200;
+    border: 1px solid rgba(240, 180, 41, 0.4);
+    font-weight: 600;
+  }
+
+  .claude-select {
+    width: 100%;
+    padding: 9px 12px;
+    border: 1px solid var(--claude-border-strong);
+    border-radius: 10px;
+    background: var(--claude-bg);
+    color: var(--claude-ink);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    outline: none;
+  }
+  .claude-select:focus {
+    border-color: var(--mcd-red);
+  }
+
+  .group-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--claude-muted);
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .item-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+
+  .item-chip {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 10px;
+    background: var(--claude-bg);
+    border: 1px solid var(--claude-border);
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    position: relative;
+    user-select: none;
+  }
+  .item-chip:hover {
+    border-color: var(--claude-border-strong);
+    background: #F5F1E8;
+  }
+  .item-chip.selected {
+    background: var(--mcd-gold-soft);
+    border-color: var(--mcd-gold);
+    color: var(--claude-ink);
+    font-weight: 600;
+    box-shadow: 0 1px 4px rgba(240, 180, 41, 0.2);
+  }
+  .item-chip .sub {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--claude-muted);
+  }
+  .item-chip .new-badge {
+    position: absolute;
+    top: -5px;
+    right: 6px;
+    background: var(--mcd-red);
+    color: #fff;
+    font-size: 9px;
+    padding: 0 5px;
+    border-radius: 99px;
+    font-weight: 600;
+  }
+
+  /* Mood & 5-Star Calibration */
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+  .mood-card {
+    padding: 10px 8px;
+    background: var(--claude-bg);
+    border: 1px solid var(--claude-border);
+    border-radius: 10px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .mood-card .m-title {
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .mood-card .m-desc {
+    font-size: 10px;
+    color: var(--claude-muted);
+    margin-top: 2px;
+  }
+  .mood-card.active {
+    background: var(--mcd-red-soft);
+    border-color: var(--mcd-red);
+    color: var(--mcd-red);
+  }
+
+  .star-box {
+    background: var(--claude-bg);
+    border: 1px solid var(--claude-border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .star-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .stars-row {
+    display: flex;
+    gap: 6px;
+  }
+  .star-btn {
+    font-size: 20px;
+    cursor: pointer;
+    color: #D9D2C5;
+    transition: transform 0.12s, color 0.12s;
+    user-select: none;
+  }
+  .star-btn.lit {
+    color: var(--mcd-gold);
+    transform: scale(1.08);
+  }
+  .arrangement-hint {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--claude-muted);
+    background: #fff;
+    padding: 5px 8px;
+    border-radius: 6px;
+    border: 1px dashed var(--claude-border);
+  }
+
+  .primary-play-btn {
+    width: 100%;
+    padding: 14px 18px;
+    background: var(--mcd-red);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    box-shadow: 0 4px 14px rgba(200, 51, 40, 0.28);
+    transition: background 0.15s, transform 0.1s;
+  }
+  .primary-play-btn:hover {
+    background: #b52b20;
+  }
+  .primary-play-btn:active {
+    transform: scale(0.99);
+  }
+
+  /* Right Column: Vinyl Stage + Full Digital / Physical Thermal Receipt */
+  .right-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .turntable-card {
+    background: var(--claude-card);
+    border: 1px solid var(--claude-border);
+    border-radius: 18px;
+    padding: 18px;
+    box-shadow: 0 4px 20px rgba(31, 30, 27, 0.04);
+  }
+
+  .stage-topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .stage-title {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    font-weight: 600;
+  }
+  .stage-controls {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .ghost-btn {
+    padding: 6px 11px;
+    background: var(--claude-oat);
+    border: 1px solid var(--claude-border);
+    border-radius: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--claude-ink);
+    cursor: pointer;
+    transition: all 0.12s;
+  }
+  .ghost-btn:hover {
+    border-color: var(--claude-ink);
+  }
+  .ghost-btn.gold {
+    background: var(--mcd-gold);
+    border-color: #d99f18;
+    color: #1f1800;
+  }
+
+  canvas#vinylCanvas {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 620 / 290;
+    display: block;
+    border-radius: 12px;
+    background: #181715;
+  }
+
+  /* 5-Section Full Song Progress Bar */
+  .song-structure-bar {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .sec-pill {
+    padding: 6px 8px;
+    border-radius: 8px;
+    background: var(--claude-bg);
+    border: 1px solid var(--claude-border);
+    text-align: center;
+    font-size: 11px;
+    color: var(--claude-muted);
+    transition: all 0.2s;
+  }
+  .sec-pill.active {
+    background: var(--mcd-red);
+    border-color: var(--mcd-red);
+    color: #fff;
+    font-weight: 600;
+  }
+
+  /* DUAL RECEIPT SYSTEM: Digital Edition vs Physical Thermal Print Edition */
+  .receipt-center-card {
+    background: var(--claude-card);
+    border: 1px solid var(--claude-border);
+    border-radius: 18px;
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(31, 30, 27, 0.04);
+  }
+
+  .receipt-tabs-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--claude-border);
+    padding-bottom: 14px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .tab-switch {
+    display: inline-flex;
+    background: var(--claude-oat);
+    padding: 4px;
+    border-radius: 10px;
+    border: 1px solid var(--claude-border);
+  }
+  .tab-btn {
+    padding: 7px 14px;
+    border-radius: 7px;
+    border: none;
+    background: transparent;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--claude-muted);
+    cursor: pointer;
+  }
+  .tab-btn.active {
+    background: var(--claude-card);
+    color: var(--claude-ink);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+  }
+
+  .print-actions {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  /* VIEW A: Full Digital Collectible Edition */
+  .digital-ticket {
+    max-width: 480px;
+    margin: 0 auto;
+    background: linear-gradient(180deg, #FFFDF9 0%, #FAF5E8 100%);
+    border: 1px solid #DFD5C0;
+    border-radius: 16px;
+    padding: 24px;
+    box-shadow: 0 10px 30px rgba(31, 30, 27, 0.07);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .dt-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 1px solid #E5DEC9;
+    padding-bottom: 12px;
+  }
+  .dt-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .dt-m-logo {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--mcd-red);
+    color: var(--mcd-gold);
+    font-weight: 900;
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .dt-title h3 {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    color: var(--claude-ink);
+  }
+  .dt-title p {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--claude-muted);
+  }
+
+  .dt-meta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    background: #FFFFFF;
+    border: 1px solid #EAE3D2;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 12px;
+  }
+  .dt-meta-item .lbl {
+    font-size: 10px;
+    color: var(--claude-muted);
+    font-family: var(--font-mono);
+  }
+  .dt-meta-item .val {
+    font-weight: 600;
+    margin-top: 2px;
+  }
+
+  .dt-lyrics-box {
+    background: #FFFFFF;
+    border-left: 3px solid var(--mcd-red);
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-family: var(--font-serif);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--claude-ink);
+    white-space: pre-line;
+  }
+
+  /* Large Centered QR Section (Both Digital & Physical) */
+  .big-qr-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    background: #FFFFFF;
+    border: 1px dashed #D5CBB8;
+    border-radius: 12px;
+    padding: 18px;
+    gap: 10px;
+  }
+  .big-qr-box {
+    width: 176px;
+    height: 176px;
+    padding: 10px;
+    background: #fff;
+    border: 2px solid var(--claude-ink);
+    border-radius: 10px;
+    cursor: pointer;
+    transition: transform 0.15s;
+  }
+  .big-qr-box:hover {
+    transform: scale(1.03);
+  }
+  /* QR caption */
+  .qr-caption {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--claude-ink);
+  }
+
+  /* Scan-landing bar: the one-tap download for people who just scanned the QR */
+  .landing-bar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: var(--mcd-gold-soft);
+    border: 1.5px dashed #d99f18;
+    border-radius: 12px;
+  }
+  .landing-dl-btn {
+    padding: 11px 18px;
+    border: none;
+    border-radius: 10px;
+    background: var(--mcd-gold);
+    color: #1f1800;
+    font-weight: 800;
+    font-size: 14px;
+    font-family: var(--font-sans);
+    cursor: pointer;
+    box-shadow: 0 2px 0 rgba(0,0,0,.12);
+    white-space: nowrap;
+  }
+  .landing-dl-btn:active { transform: translateY(1px); }
+  .landing-tip {
+    font-size: 12px;
+    color: var(--claude-muted);
+    line-height: 1.4;
+    min-width: 0;
+  }
+  @media (max-width: 880px) {
+    .landing-bar { flex-direction: column; text-align: center; gap: 8px; }
+  }
+  .qr-sub {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--claude-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 0;
+    max-width: 100%;
+  }
+
+  /* VIEW B: Physical 80mm Thermal Print Receipt (Store POS / Pocket Printer Ready) */
+  .thermal-ticket-wrap {
+    display: none;
+    justify-content: center;
+  }
+  .thermal-ticket-wrap.active {
+    display: flex;
+  }
+  .digital-ticket.hidden {
+    display: none;
+  }
+
+  .thermal-80mm {
+    width: 340px;
+    background: #FFFFFF;
+    color: #000000;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    padding: 22px 20px;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-top: 6px dotted #111;
+    border-bottom: 6px dotted #111;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .th-center {
+    text-align: center;
+  }
+  .th-title {
+    font-size: 16px;
+    font-weight: 900;
+    letter-spacing: 1px;
+  }
+  .th-divider {
+    border-top: 1.5px dashed #000;
+    margin: 4px 0;
+  }
+  .th-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    line-height: 1.45;
+  }
+  .th-qr-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 8px 0;
+    gap: 6px;
+  }
+  .th-qr-box {
+    width: 184px;
+    height: 184px;
+    border: 2px solid #000;
+    padding: 8px;
+    background: #fff;
+    cursor: pointer;
+  }
+  .th-barcode {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 3px;
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  .footer-credit {
+    margin-top: 32px;
+    text-align: center;
+    font-size: 12px;
+    color: var(--claude-muted);
+  }
+  .footer-credit a {
+    color: var(--claude-ink);
+    font-weight: 600;
+  }
+
+  /* Direct Physical Thermal Printer CSS (@media print) */
+  @media print {
+    body { background: #fff; padding: 0; }
+    .claude-header, .left-panel, .turntable-card, .receipt-tabs-bar, .footer-credit {
+      display: none !important;
+    }
+    .workspace, .right-panel, .receipt-center-card {
+      width: 100% !important;
+      max-width: 100% !important;
+      border: none !important;
+      box-shadow: none !important;
+      padding: 0 !important;
+      margin: 0 !important;
+    }
+    .digital-ticket { display: none !important; }
+    .thermal-ticket-wrap { display: flex !important; }
+    .thermal-80mm {
+      width: 78mm !important;
+      box-shadow: none !important;
+      border: none !important;
+      padding: 4mm !important;
+    }
+  }
+
+  /* Order Import UI */
+  .import-bar { display: flex; gap: 8px; margin-bottom: 10px; }
+  .import-main-btn {
+    flex: 1; padding: 10px 14px; border-radius: 10px; cursor: pointer;
+    background: var(--mcd-red); color: #FAF8F4; border: none;
+    font-weight: 700; font-size: 13px; font-family: var(--font-sans);
+    box-shadow: 0 2px 0 rgba(0,0,0,.10); transition: transform .1s;
+  }
+  .import-main-btn:hover { transform: translateY(-1px); }
+  .import-alt-btn {
+    padding: 10px 12px; border-radius: 10px; cursor: pointer;
+    background: transparent; color: var(--claude-muted);
+    border: 1.5px dashed var(--claude-border-strong); font-size: 12px; font-weight: 600;
+  }
+  .import-alt-btn:hover { border-color: var(--mcd-gold); color: #B8860B; }
+  .import-panel {
+    background: var(--claude-oat); border: 1px solid var(--claude-border);
+    border-radius: 12px; padding: 10px; margin-bottom: 12px;
+  }
+  .imp-row { display: flex; gap: 8px; margin-bottom: 8px; }
+  .imp-token {
+    flex: 1; padding: 8px 10px; border-radius: 8px; border: 1px solid var(--claude-border-strong);
+    background: #FFFDF7; font-size: 12px; font-family: var(--font-sans); color: var(--claude-ink);
+  }
+  .imp-fetch {
+    padding: 8px 14px; border-radius: 8px; border: none; cursor: pointer;
+    background: var(--mcd-gold); color: var(--claude-ink); font-weight: 700; font-size: 12px;
+  }
+  .imp-list-head { font-size: 11px; font-weight: 700; color: var(--claude-muted); margin: 2px 0 6px; letter-spacing: .3px; }
+  .imp-order {
+    display: block; width: 100%; text-align: left; cursor: pointer;
+    background: #FFFDF7; border: 1px solid var(--claude-border); border-radius: 8px;
+    padding: 7px 10px; margin-bottom: 6px; font-size: 11.5px; color: var(--claude-ink);
+    font-family: var(--font-sans);
+  }
+  .imp-order:hover { border-color: var(--mcd-gold); background: var(--mcd-gold-soft); }
+  .io-time { color: var(--claude-muted); margin-right: 8px; font-family: var(--font-mono); font-size: 10.5px; }
+  .io-store { font-weight: 700; }
+  .io-items { display: block; color: var(--claude-muted); margin-top: 2px; }
+  .imp-hint { font-size: 10.5px; color: var(--claude-muted); line-height: 1.55; }
+  .imp-paste {
+    width: 100%; height: 84px; padding: 8px 10px; border-radius: 8px;
+    border: 1px solid var(--claude-border-strong); background: #FFFDF7;
+    font-size: 11px; font-family: var(--font-mono); resize: vertical; margin-bottom: 8px; color: var(--claude-ink);
+  }
+  .more-food-toggle {
+    width: 100%; padding: 8px; border-radius: 10px; cursor: pointer;
+    border: 1.5px dashed var(--claude-border-strong); background: transparent;
+    color: var(--claude-muted); font-size: 12px; font-weight: 600; margin: 2px 0 10px;
+  }
+  .more-food-toggle:hover { border-color: var(--mcd-gold); color: #B8860B; }
+
+  @media (max-width: 880px) {
+    .workspace { grid-template-columns: minmax(0, 1fr); }
+    .left-panel, .right-panel, .c-card, .import-panel, .imp-row, .imp-token, .imp-paste { min-width: 0; max-width: 100%; }
+    .claude-header h1 { font-size: 22px; }
+    body { padding: 20px 12px 48px; }
+    .turntable-card, .receipt-center-card { padding: 12px; border-radius: 14px; }
+    .c-card { padding: 14px; }
+    .stage-title { font-size: 14px; }
+    .ghost-btn { padding: 5px 8px; font-size: 10px; }
+    .sec-pill { padding: 4px 3px; font-size: 9.5px; border-radius: 6px; }
+    .song-structure-bar { gap: 4px; margin-top: 8px; }
+    .import-bar { flex-direction: column; }
+    .imp-token, .imp-paste { font-size: 16px; } /* avoid iOS focus zoom */
+  }
+</style>
+</head>
+<body>
+
+<div class="claude-header">
+  <h1>把这顿麦当劳，变成一首歌</h1>
+  <p>选一餐 → 选心情 → 点播放</p>
+</div>
+
+<div class="workspace" id="workspace">
+  <!-- LEFT: 3 Clean Steps in Claude UI Cards -->
+  <div class="left-panel">
+    <!-- Step 1: Order / Menu -->
+    <div class="c-card">
+      <div class="card-head">
+        <h2>① 这顿吃了什么？</h2>
+        <span class="pill-tag" id="kcalBadge">993 kcal · ¥46.0</span>
+      </div>
+
+      <div class="import-bar">
+        <button class="import-main-btn" id="importOrderBtn">📋 导入我的订单</button>
+        <button class="import-alt-btn" id="pasteJsonBtn">粘贴 JSON</button>
+      </div>
+      <div class="import-panel hidden" id="importPanel">
+        <div class="imp-row">
+          <input class="imp-token" id="mcpTokenInput" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="MCD MCP Token（选填，留空列出演示订单）">
+          <button class="imp-fetch" id="fetchOrdersBtn">拉取</button>
+        </div>
+        <div class="imp-list" id="importOrderList"></div>
+        <div class="imp-hint" id="importHint">有 Token 可拉取真实订单；没有就直接在下面选一餐。</div>
+      </div>
+      <div class="import-panel hidden" id="pastePanel">
+        <textarea class="imp-paste" id="pasteJsonArea" placeholder='粘贴 order-list / query-order 的返回 JSON（含 "## Original Response" 的 Markdown 原文也行）'></textarea>
+        <button class="imp-fetch" id="parseJsonBtn">解析并导入</button>
+      </div>
+
+      <div class="group-label">
+        <span>🍔 汉堡</span>
+        <span>选一个</span>
+      </div>
+      <div class="item-grid" id="burgerGrid"></div>
+
+      <button class="more-food-toggle" id="moreFoodToggle">＋ 小食 / 饮品</button>
+      <div class="hidden" id="moreFood">
+        <div class="group-label">
+          <span>🍟 小食</span>
+          <span>多选</span>
+        </div>
+        <div class="item-grid" id="sideGrid"></div>
+        <div class="group-label">
+          <span>🥤 饮品甜品</span>
+          <span>多选</span>
+        </div>
+        <div class="item-grid" id="drinkGrid"></div>
+      </div>
+    </div>
+
+    <!-- Step 2: Mood & 5-Star Arrangement Calibration -->
+    <div class="c-card">
+      <div class="card-head">
+        <h2>② 今天心情如何？</h2>
+        <span class="pill-tag" id="moodBadge">🌧️ 有点 Down · ★★★★☆</span>
+      </div>
+
+      <div class="mood-grid" id="moodGrid">
+        <div class="mood-card" data-mood="happy">
+          <div class="m-title">😊 开心奖励</div>
+          <div class="m-desc">明亮欢快</div>
+        </div>
+        <div class="mood-card" data-mood="numb">
+          <div class="m-title">😐 麻木放空</div>
+          <div class="m-desc">轻盈悬浮</div>
+        </div>
+        <div class="mood-card active" data-mood="down">
+          <div class="m-title">🌧️ 有点 Down</div>
+          <div class="m-desc">温柔治愈</div>
+        </div>
+      </div>
+
+      <div class="star-box">
+        <div class="star-top">
+          <span>编曲丰富度</span>
+          <div class="stars-row" id="starsRow">
+            <span class="star-btn lit" data-val="1">★</span>
+            <span class="star-btn lit" data-val="2">★</span>
+            <span class="star-btn lit" data-val="3">★</span>
+            <span class="star-btn lit" data-val="4">★</span>
+            <span class="star-btn" data-val="5">★</span>
+          </div>
+        </div>
+        <div class="arrangement-hint" id="arrangementHint">
+          当前 4★ 编制：加对位旋律线
+        </div>
+      </div>
+
+      <button class="primary-play-btn" id="playBtn">
+        <span>▶ 播放 · 拆开这顿饭</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- RIGHT: Turntable Animation + Full Digital / Physical Thermal Receipt -->
+  <div class="right-panel">
+    <!-- Top: Turntable Stage -->
+    <div class="turntable-card">
+      <div class="stage-topbar">
+        <div class="stage-title" id="stageTitle">等一顿饭变成歌…</div>
+        <div class="stage-controls">
+          <button class="ghost-btn gold" id="soloJingleBtn">🎵 Ba-Da-Ba</button>
+          <button class="ghost-btn" id="explodeBtn">🍔 分层</button>
+          <button class="ghost-btn" id="reelToggleBtn">📱 竖屏</button>
+          <button class="ghost-btn" id="recordVideoBtn">🔴 录视频</button>
+        </div>
+      </div>
+
+      <canvas id="vinylCanvas" width="620" height="290"></canvas>
+
+      <!-- 5-Section Real Song Progress Indicator -->
+      <div class="song-structure-bar" id="sectionBar">
+        <div class="sec-pill" data-sec="0">前奏</div>
+        <div class="sec-pill" data-sec="1">主歌</div>
+        <div class="sec-pill" data-sec="2">预副歌</div>
+        <div class="sec-pill" data-sec="3">副歌</div>
+        <div class="sec-pill" data-sec="4">尾奏</div>
+      </div>
+
+      <!-- Shown only when opened via QR scan: one tap to take the song away -->
+      <div class="landing-bar hidden" id="landingBar">
+        <button class="landing-dl-btn" id="landingDlBtn">⬇ 下载这首歌 (.wav)</button>
+        <div class="landing-tip" id="landingTip">这是你扫的那顿饭的歌——先点 ▶ 试听，喜欢就带走。</div>
+      </div>
+    </div>
+
+    <!-- Bottom: Dual Receipt Center (Full Digital Edition + Physical 80mm Thermal Edition) -->
+    <div class="receipt-center-card">
+      <div class="receipt-tabs-bar">
+        <div class="tab-switch">
+          <button class="tab-btn active" id="tabDigitalBtn">✨ 电子小票</button>
+          <button class="tab-btn" id="tabThermalBtn">🧾 热敏打印版 (80mm)</button>
+        </div>
+
+        <div class="print-actions">
+          <button class="ghost-btn gold" id="downloadFullWavBtn">⬇ 下载这首歌 (.wav)</button>
+          <button class="ghost-btn" id="printPhysicalBtn">🖨️ 打印小票</button>
+          <button class="ghost-btn" id="exportEscPosBtn">🔌 POS 指令（实验）</button>
+          <button class="ghost-btn" id="exportYueBtn">🎼 导出 YuE 渲染包</button>
+        </div>
+      </div>
+
+      <!-- EDITION A: Full Digital Collectible Receipt -->
+      <div class="digital-ticket" id="digitalTicket">
+        <div class="dt-header">
+          <div class="dt-brand">
+            <div class="dt-m-logo">M</div>
+            <div class="dt-title">
+              <h3 id="dtSongTitle">《深夜高新南的13块9温柔》</h3>
+              <p id="dtSerial">ORDER #MCD-0248-42 · 麦当劳深圳高新南一道餐厅</p>
+            </div>
+          </div>
+          <span class="pill-tag" id="dtEggBadge">🌙 24h深夜留灯彩蛋</span>
+        </div>
+
+        <div class="dt-meta-grid">
+          <div class="dt-meta-item">
+            <div class="lbl">这顿饭</div>
+            <div class="val" id="dtItems">双层吉士堡 + 麦乐鸡 + 无糖可乐</div>
+          </div>
+          <div class="dt-meta-item">
+            <div class="lbl">心情</div>
+            <div class="val" id="dtMoodKey">🌧️ 有点 Down (4★) · 深夜暗涌</div>
+          </div>
+        </div>
+
+        <div class="dt-lyrics-box" id="dtLyrics"></div>
+
+        <!-- Large Centered Scannable QR Code -->
+        <div class="big-qr-section">
+          <div class="big-qr-box" id="digitalQrBox" title="点击或用手机扫码下载这首歌的 .wav 音频"></div>
+          <div class="qr-caption">扫码带走这首歌</div>
+          <div class="qr-sub" id="dtQrHash">UNIQUE SONG URI: mcd://happymeal/MCD-0248-42-DOWN4</div>
+        </div>
+      </div>
+
+      <!-- EDITION B: Physical 80mm Thermal Printer Ticket -->
+      <div class="thermal-ticket-wrap" id="thermalTicketWrap">
+        <div class="thermal-80mm" id="thermal80mm">
+          <div class="th-center">
+            <div class="th-title">M · 开心乐园餐音乐单</div>
+            <div style="font-size:10px">McDONALD'S MCP × YuE THERMAL POS</div>
+          </div>
+          <div class="th-divider"></div>
+          <div class="th-row"><span id="thStore">门店: 麦当劳深圳高新南一道餐厅</span><span id="thCode">#1900248</span></div>
+          <div class="th-row"><span id="thOrder">单号: MCD-0248-42</span><span id="thTime">2026-10-23 23:42</span></div>
+          <div class="th-row"><span id="thMood">大人心情: 🌧️ 有点 Down (4★)</span><span id="thKcal">670 kcal</span></div>
+          <div class="th-divider"></div>
+          <div class="th-row"><span>餐品</span><span id="thItems">双层吉士堡 + 麦乐鸡 + 无糖可乐</span></div>
+          <div id="thLyrics" style="font-size:11px;line-height:1.5;padding:4px 0"></div>
+          <div class="th-divider"></div>
+          <div class="th-qr-center">
+            <div style="font-weight:800;font-size:11px">▼ 扫码带走这首歌 ▼</div>
+            <div class="th-qr-box" id="thermalQrBox" title="扫码或点击下载这首歌的 .wav 音频"></div>
+            <div style="font-size:10px">浏览器打印 · POS 导出需按机型适配</div>
+          </div>
+          <div class="th-barcode" id="thBarcode">||| |||| || ||||| |||| |||</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="footer-credit">
+  数据：麦当劳官方 MCP（只读） · 扩展渲染致谢 <a href="https://github.com/multimodal-art-projection/YuE" target="_blank">YuE</a>
+</div>
+
+<script>
+/**
+ * 1. MENU DATABASE WITH DISTINCT MELODIC MOTIFS (Scale Degree Indices 0..7)
+ * Instead of random raw semitones, melodies are written in musical scale degrees
+ * so they automatically adapt to the selected Mood's scale & chord progression!
+ */
+const MENU_DB = {
+  burgers: [
+    {
+      id: "double_cheese", name: "双层吉士堡", emoji: "🧀", kcal: 440, price: 13.9, color: "#F0B429",
+      rootHz: 220.0, // A3 / C4 warm register
+      songTitle: "《13块9的双层吉士温柔》",
+      layers: [
+        { label: "松软面包顶", color: "#E59838", h: 20, type: "bun-top" },
+        { label: "酸黄瓜·芥末酱·洋葱碎", color: "#CE9A3A", h: 9, type: "sauce" },
+        { label: "第一片切达芝士", color: "#F0B429", h: 9, type: "cheese" },
+        { label: "多汁牛肉饼 #1", color: "#6E2E1E", h: 14, type: "patty" },
+        { label: "第二片切达芝士", color: "#F0B429", h: 9, type: "cheese" },
+        { label: "多汁牛肉饼 #2", color: "#6E2E1E", h: 14, type: "patty" },
+        { label: "烘烤面包底", color: "#D68628", h: 15, type: "bun-bot" }
+      ],
+      // Lyrical stepwise canon-style melody (scale degrees)
+      verseDegrees:  [0, 2, 4, 2,  3, 2, 1, 0,  1, 2, 3, 5,  4, 3, 2, 2],
+      chorusDegrees: [4, 5, 7, 5,  6, 5, 4, 3,  2, 3, 4, 6,  5, 4, 3, 4],
+      lyricVerse: "点开熟悉的随心配，双层芝士慢慢融化在夜里",
+      lyricChorus: "小时候考满分才有的开心乐园餐玩具\n长大后一顿13块9的双层吉士替你找到"
+    },
+    {
+      id: "bigmac", name: "巨无霸", emoji: "🍔", kcal: 513, price: 25.0, color: "#C83328",
+      rootHz: 196.0, // G3
+      songTitle: "《双层巨无霸的黄金年代》",
+      layers: [
+        { label: "芝麻顶层面包", color: "#E59838", h: 22, type: "bun-top" },
+        { label: "生菜酸黄瓜特调酱", color: "#EAD9A8", h: 10, type: "greens" },
+        { label: "纯牛肉饼 #1", color: "#6E2E1E", h: 14, type: "patty" },
+        { label: "中层夹心面包", color: "#E59838", h: 12, type: "bun-mid" },
+        { label: "融化切达芝士", color: "#F0B429", h: 8, type: "cheese" },
+        { label: "纯牛肉饼 #2", color: "#6E2E1E", h: 14, type: "patty" },
+        { label: "烘烤底座面包", color: "#D68628", h: 16, type: "bun-bot" }
+      ],
+      verseDegrees:  [0, 4, 3, 2,  0, 2, 4, 5,  4, 2, 1, 0,  2, 3, 2, 0],
+      chorusDegrees: [4, 7, 6, 4,  5, 6, 7, 9,  7, 6, 4, 5,  4, 2, 1, 0],
+      lyricVerse: "三层面包夹着双层牛肉，是从小仰望的金色招牌",
+      lyricChorus: "无论世界变得多快，第一口巨无霸永远和八岁那年一样笃定"
+    },
+    {
+      id: "mcspicy", name: "麦辣鸡腿堡", emoji: "🌶️", kcal: 485, price: 21.0, color: "#E6641C",
+      rootHz: 246.94, // B3
+      songTitle: "《咔嚓酥脆的多巴胺烟花》",
+      layers: [
+        { label: "玉米碎面包顶", color: "#E59838", h: 22, type: "bun-top" },
+        { label: "爽脆生菜丝", color: "#66BB6A", h: 12, type: "greens" },
+        { label: "蒜香辣椒酱", color: "#F2D06B", h: 7, type: "sauce" },
+        { label: "金黄酥脆麦辣鸡腿排", color: "#E6641C", h: 24, type: "crispy" },
+        { label: "烘烤面包底", color: "#D68628", h: 16, type: "bun-bot" }
+      ],
+      verseDegrees:  [2, 4, 5, 4,  2, 0, 1, 2,  3, 5, 6, 5,  4, 2, 3, 4],
+      chorusDegrees: [7, 5, 4, 7,  6, 7, 8, 7,  5, 4, 2, 4,  5, 3, 2, 0],
+      lyricVerse: "金黄酥脆的外皮咔嚓作响，把攒了一整天的疲惫轻轻震碎",
+      lyricChorus: "吃一口滚烫的麦辣鸡腿堡，让热辣的琶音替你把所有不痛快统统翻篇"
+    },
+    {
+      id: "gcbb", name: "板烧鸡腿堡", emoji: "🍗", kcal: 415, price: 22.0, color: "#1E7E4E",
+      rootHz: 261.63, // C4
+      songTitle: "《原块板烧的松弛午后》",
+      layers: [
+        { label: "玉米碎长面包顶", color: "#E59838", h: 20, type: "bun-top" },
+        { label: "爽脆生菜与黑椒酱", color: "#4CAF50", h: 12, type: "greens" },
+        { label: "原块铁板嫩鸡腿排", color: "#9C4A22", h: 22, type: "patty" },
+        { label: "长面包底座", color: "#D68628", h: 16, type: "bun-bot" }
+      ],
+      verseDegrees:  [4, 3, 2, 0,  1, 2, 4, 3,  2, 1, 0, 2,  4, 3, 1, 0],
+      chorusDegrees: [7, 6, 4, 5,  6, 7, 9, 7,  6, 5, 4, 2,  3, 2, 1, 0],
+      lyricVerse: "零油炸的铁板香气，是忙碌日常里最温和也最克制的老朋友",
+      lyricChorus: "不用追赶谁的节拍，面包层层咬合的温柔，这十五分钟只属于你自己"
+    },
+    {
+      id: "griddle", name: "枫糖厚松饼堡", emoji: "🥞", kcal: 525, price: 15.0, color: "#D9822B", limited: "早餐回归",
+      rootHz: 233.08, // Bb3
+      songTitle: "《早八枫糖厚松饼八音盒》",
+      layers: [
+        { label: "M字钢印枫糖松饼顶", color: "#D98A2B", h: 22, type: "bun-top" },
+        { label: "嫩滑蒸蛋层", color: "#FFF3B0", h: 12, type: "cheese" },
+        { label: "融化切达芝士", color: "#F0B429", h: 8, type: "cheese" },
+        { label: "多汁猪柳肉饼", color: "#7C3F28", h: 16, type: "patty" },
+        { label: "枫糖厚松饼底", color: "#C87A20", h: 20, type: "bun-bot" }
+      ],
+      verseDegrees:  [7, 6, 4, 2,  3, 4, 2, 0,  1, 2, 4, 5,  4, 3, 2, 0],
+      chorusDegrees: [7, 9, 8, 7,  5, 6, 7, 4,  5, 4, 2, 3,  2, 1, 0, 0],
+      lyricVerse: "印着 M 字钢印的松软枫糖松饼，接住了清晨第一缕阳光",
+      lyricChorus: "早八赶路的人别慌张，甜软的晨间八音盒正在为你慢慢充能"
+    },
+    {
+      id: "dragon_burger", name: "龙焰鸡腿堡", emoji: "🖤", kcal: 540, price: 21.0, color: "#7E3AF2", limited: "10月彩蛋",
+      rootHz: 220.0,
+      songTitle: "《十月龙焰与缺瓣小雏菊》",
+      layers: [
+        { label: "黑金芝麻面包顶", color: "#DA7B27", h: 21, type: "bun-top" },
+        { label: "韩式青梅辣椒黄油酱", color: "#C83328", h: 11, type: "sauce" },
+        { label: "爆脆多汁龙焰鸡腿排", color: "#D9531E", h: 24, type: "crispy" },
+        { label: "烘烤面包底", color: "#C87322", h: 16, type: "bun-bot" }
+      ],
+      verseDegrees:  [0, 1, 2, 4,  3, 2, 1, 0,  2, 3, 4, 6,  5, 4, 2, 0],
+      chorusDegrees: [4, 6, 7, 9,  8, 7, 6, 4,  5, 6, 7, 4,  3, 2, 1, 0],
+      lyricVerse: "青梅黄油撞上韩式辣酱，在日常餐盘里点亮十月限定彩蛋",
+      lyricChorus: "缺了一瓣的小雏菊依然盛开，不完美的大人也值得一份闪耀的玩具"
+    }
+  ],
+  sides: [
+    { id: "fries", name: "中薯条", emoji: "🍟", kcal: 330, price: 12.0, color: "#F0B429" },
+    { id: "nuggets", name: "麦乐鸡(5块)", emoji: "🍗", kcal: 230, price: 14.0, color: "#E6641C" },
+    { id: "wings", name: "麦辣鸡翅", emoji: "🔥", kcal: 260, price: 13.0, color: "#C83328" },
+    { id: "taro_pie", name: "香芋派", emoji: "🥧", kcal: 240, price: 8.0, color: "#9C27B0" },
+    { id: "hashbrown", name: "脆薯饼", emoji: "🥔", kcal: 150, price: 7.0, color: "#D9822B" },
+    { id: "gd_box", name: "韩式鸡薯盒", emoji: "🖤", kcal: 610, price: 15.9, color: "#F0B429", limited: "限定" }
+  ],
+  drinks: [
+    { id: "coke", name: "可口可乐", emoji: "🥤", kcal: 150, price: 9.0, color: "#C83328" },
+    { id: "zero_coke", name: "无糖可乐", emoji: "🧊", kcal: 0, price: 9.0, color: "#00ACC1" },
+    { id: "americano", name: "冰美式", emoji: "☕", kcal: 10, price: 9.9, color: "#795548" },
+    { id: "mcflurry", name: "奥利奥麦旋风", emoji: "🍦", kcal: 280, price: 12.0, color: "#5C6BC0" },
+    { id: "ash_cone", name: "灰焰圆筒", emoji: "🩶", kcal: 185, price: 6.0, color: "#78909C", limited: "10/23新" },
+    { id: "blueberry", name: "蓝莓爆珠旋风", emoji: "🫐", kcal: 320, price: 13.0, color: "#8E24AA", limited: "10月新" }
+  ]
+};
+
+/**
+ * 2. MOOD MUSICAL HARMONY PROFILES — 治愈系（回滚自迷幻实验）
+ */
+const MOOD_PROFILES = {
+  happy: {
+    label: "😊 开心奖励",
+    modeDesc: "明亮欢快 · 八音盒",
+    scale: [0, 2, 4, 5, 7, 9, 11, 12, 14, 16, 17, 19], // Major
+    chords: [
+      [0, 4, 7, 11],
+      [-5, -1, 2, 7],
+      [-3, 0, 4, 7],
+      [-7, -3, 0, 4]
+    ],
+    bpm: 104,
+    timbre: "celesta"
+  },
+  numb: {
+    label: "😐 麻木放空",
+    modeDesc: "轻盈悬浮 · 木琴",
+    scale: [0, 2, 4, 6, 7, 9, 11, 12, 14, 16, 18, 19], // Lydian
+    chords: [
+      [0, 4, 7, 11],
+      [-1, 2, 6, 9],
+      [-3, 0, 4, 7],
+      [-5, -1, 2, 6]
+    ],
+    bpm: 86,
+    timbre: "marimba"
+  },
+  down: {
+    label: "🌧️ 有点 Down",
+    modeDesc: "温柔治愈 · 柔音钢琴",
+    scale: [0, 2, 3, 5, 7, 8, 10, 12, 14, 15, 17, 19], // Aeolian
+    chords: [
+      [0, 3, 7, 10],
+      [-4, 0, 3, 7],
+      [3, 7, 10, 14],
+      [-2, 2, 5, 9]
+    ],
+    bpm: 78,
+    timbre: "felt_piano"
+  }
+};
+
+const STAR_DESCRIPTIONS = {
+  1: "★ 独奏旋律",
+  2: "★★ 加温暖和弦",
+  3: "★★★ 加低音线",
+  4: "★★★★ 加琶音和鼓",
+  5: "★★★★★ 高音齐奏"
+};
+
+const ORDER_PRESETS = {
+  order_night:   { orderNo: "MCD-0248-42", storeCode: "1900248", storeName: "麦当劳深圳高新南一道餐厅", time: "2026-10-23 23:42", burger: "double_cheese", sides: ["nuggets", "fries"], drinks: ["zero_coke"], mood: "down", stars: 4 },
+  order_bigmac:  { orderNo: "MCD-0512-18", storeCode: "1100512", storeName: "麦当劳北京望京SOHO餐厅", time: "2026-10-23 12:30", burger: "bigmac", sides: ["fries"], drinks: ["coke"], mood: "happy", stars: 5 },
+  order_spicy:   { orderNo: "MCD-0601-88", storeCode: "5100601", storeName: "麦当劳成都春熙路餐厅", time: "2026-10-23 20:15", burger: "mcspicy", sides: ["wings", "fries"], drinks: ["mcflurry"], mood: "happy", stars: 4 },
+  order_morning: { orderNo: "MCD-0319-07", storeCode: "2000319", storeName: "麦当劳广州天河城餐厅", time: "2026-10-23 08:15", burger: "griddle", sides: ["hashbrown"], drinks: ["americano"], mood: "numb", stars: 3 },
+  order_gd:      { orderNo: "MCD-0882-99", storeCode: "2100882", storeName: "麦当劳上海静安寺旗舰餐厅", time: "2026-10-23 19:20", burger: "dragon_burger", sides: ["gd_box"], drinks: ["ash_cone"], mood: "happy", stars: 5 }
+};
+
+let curOrder = { ...ORDER_PRESETS.order_night };
+let selectedBurger = curOrder.burger;
+let selectedSides = new Set(curOrder.sides);
+let selectedDrinks = new Set(curOrder.drinks);
+let currentMood = curOrder.mood;
+let moodStars = curOrder.stars;
+
+// Audio Studio Engine State
+let audioCtx = null;
+let masterGain = null;
+let reverbNode = null;
+let isPlaying = false;
+let songStep = 0;         // global step index across the 5-section song (see SONG_LAYOUT)
+let stepTimer = null;
+let animTick = 0;
+let explodeLayers = false;
+let landedTicks = {};     // burger layer index (from bottom) -> animTick when it landed
+let dropStartReal = {};   // layer index -> performance.now() when its beat-locked drop began
+let beatRings = [];       // expanding golden rings spawned on each beat while playing
+let lastRingStep = -1;    // songStep when the last beat ring spawned
+
+function getBurger() {
+  return MENU_DB.burgers.find(b => b.id === selectedBurger) || MENU_DB.burgers[0];
+}
+
+function getMoodObj() {
+  return MOOD_PROFILES[currentMood] || MOOD_PROFILES.down;
+}
+
+function semiToHz(root, semi) {
+  return root * Math.pow(2, semi / 12);
+}
+
+/**
+ * Studio-Grade Web Audio Engine with Stereo Hall Convolution Reverb + Dub Delay Bus
+ */
+let delayNode = null, delayFb = null, delayWet = null;
+function initAudioEngine() {
+  if (!audioCtx) {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    audioCtx = new AC();
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0.55;
+
+    // Create Lush 2.2s Stereo Hall Convolution Reverb Impulse
+    const rate = audioCtx.sampleRate;
+    const len = Math.floor(rate * 2.2);
+    const impulse = audioCtx.createBuffer(2, len, rate);
+    for (let ch = 0; ch < 2; ch++) {
+      const data = impulse.getChannelData(ch);
+      for (let i = 0; i < len; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, 2.6);
+      }
+    }
+    reverbNode = audioCtx.createConvolver();
+    reverbNode.buffer = impulse;
+
+    const wetGain = audioCtx.createGain();
+    wetGain.gain.value = 0.38;
+
+    masterGain.connect(audioCtx.destination);
+    masterGain.connect(reverbNode);
+    reverbNode.connect(wetGain);
+    wetGain.connect(audioCtx.destination);
+
+    // Dub delay bus (dotted-8th echo — the psychedelic glue)
+    delayNode = audioCtx.createDelay(2);
+    delayFb = audioCtx.createGain(); delayFb.gain.value = 0.34;
+    delayWet = audioCtx.createGain(); delayWet.gain.value = 0;
+    delayNode.connect(delayFb);
+    delayFb.connect(delayNode);
+    delayNode.connect(delayWet);
+    delayWet.connect(masterGain);
+    delayWet.connect(reverbNode);
+  }
+  if (audioCtx.state === "suspended") audioCtx.resume();
+}
+
+function setEchoTempo(stepSec, amount = 0.22) {
+  if (!audioCtx) return;
+  delayNode.delayTime.setTargetAtTime(Math.min(1.8, stepSec * 1.5), audioCtx.currentTime, 0.1);
+  delayWet.gain.setTargetAtTime(amount, audioCtx.currentTime, 0.1);
+}
+
+/**
+ * Psychedelic voices: pluck (echoed), pad (detuned saws + LFO filter), bass (driven sub)
+ */
+function playPluckNote(freq, dur = 0.4, vol = 0.2) {
+  initAudioEngine();
+  const now = audioCtx.currentTime;
+  const osc = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const g = audioCtx.createGain();
+  const flt = audioCtx.createBiquadFilter();
+  osc.type = "triangle";
+  osc2.type = "sine";
+  osc.frequency.setValueAtTime(freq, now);
+  osc2.frequency.setValueAtTime(freq * 2.003, now); // slight detune shimmer
+  flt.type = "lowpass";
+  flt.frequency.setValueAtTime(Math.min(freq * 6, 5200), now);
+  flt.frequency.exponentialRampToValueAtTime(Math.max(freq * 1.5, 300), now + dur);
+  g.gain.setValueAtTime(0.0001, now);
+  g.gain.linearRampToValueAtTime(vol, now + 0.006);
+  g.gain.exponentialRampToValueAtTime(0.0004, now + dur);
+  osc.connect(g); osc2.connect(g);
+  g.connect(flt);
+  flt.connect(masterGain);
+  flt.connect(delayNode); // into the dub echo
+  osc.start(now); osc2.start(now);
+  osc.stop(now + dur + 0.05); osc2.stop(now + dur + 0.05);
+}
+
+function playPadNote(freq, dur = 2.2, vol = 0.06) {
+  initAudioEngine();
+  const now = audioCtx.currentTime;
+  const g = audioCtx.createGain();
+  const flt = audioCtx.createBiquadFilter();
+  flt.type = "lowpass";
+  flt.Q.value = 3;
+  flt.frequency.setValueAtTime(520, now);
+  flt.frequency.linearRampToValueAtTime(1500, now + dur * 0.6);
+  // slow LFO sweeping the filter = psychedelic breathing
+  const lfo = audioCtx.createOscillator();
+  const lfoG = audioCtx.createGain();
+  lfo.frequency.value = 0.16;
+  lfoG.gain.value = 380;
+  lfo.connect(lfoG); lfoG.connect(flt.frequency);
+  [0.9965, 1.0035].forEach(det => {
+    const o = audioCtx.createOscillator();
+    o.type = "sawtooth";
+    o.frequency.setValueAtTime(freq * det, now);
+    o.connect(flt);
+    o.start(now); o.stop(now + dur + 0.1);
+  });
+  g.gain.setValueAtTime(0.0001, now);
+  g.gain.linearRampToValueAtTime(vol, now + Math.min(0.5, dur * 0.3)); // slow bloom
+  g.gain.setValueAtTime(vol, now + dur * 0.7);
+  g.gain.exponentialRampToValueAtTime(0.0003, now + dur);
+  flt.connect(g);
+  g.connect(masterGain);
+  g.connect(reverbNode);
+  lfo.start(now); lfo.stop(now + dur + 0.1);
+}
+
+function playBassNote(freq, dur = 0.5, vol = 0.2) {
+  initAudioEngine();
+  const now = audioCtx.currentTime;
+  const sub = audioCtx.createOscillator();
+  const grit = audioCtx.createOscillator();
+  const shaper = audioCtx.createWaveShaper();
+  const g = audioCtx.createGain();
+  sub.type = "sine";
+  sub.frequency.setValueAtTime(freq, now);
+  grit.type = "square";
+  grit.frequency.setValueAtTime(freq, now);
+  const curve = new Float32Array(256);
+  for (let i = 0; i < 256; i++) curve[i] = Math.tanh((i / 128 - 1) * 2.2);
+  shaper.curve = curve;
+  const gritG = audioCtx.createGain(); gritG.gain.value = 0.16;
+  g.gain.setValueAtTime(0.0001, now);
+  g.gain.linearRampToValueAtTime(vol, now + 0.015);
+  g.gain.exponentialRampToValueAtTime(0.0005, now + dur);
+  sub.connect(g);
+  grit.connect(gritG); gritG.connect(shaper); shaper.connect(g);
+  g.connect(masterGain);
+  sub.start(now); grit.start(now);
+  sub.stop(now + dur + 0.05); grit.stop(now + dur + 0.05);
+}
+
+/**
+ * Multi-Harmonic Acoustic Note Synthesizer (Sounds like real Felt Piano / Music Box / Rhodes)
+ */
+function playAcousticNote(freq, dur = 0.55, vol = 0.2, timbre = "felt_piano") {
+  initAudioEngine();
+  const now = audioCtx.currentTime;
+
+  // Fundamental + 2nd Harmonic + Bell Overtone
+  const osc1 = audioCtx.createOscillator();
+  const osc2 = audioCtx.createOscillator();
+  const g1 = audioCtx.createGain();
+  const g2 = audioCtx.createGain();
+  const flt = audioCtx.createBiquadFilter();
+
+  osc1.type = "sine";
+  osc1.frequency.setValueAtTime(freq, now);
+
+  osc2.type = timbre === "celesta" ? "triangle" : "sine";
+  osc2.frequency.setValueAtTime(freq * (timbre === "celesta" ? 3 : 2), now);
+
+  flt.type = "lowpass";
+  flt.frequency.setValueAtTime(timbre === "felt_piano" ? 1600 : 3800, now);
+
+  g1.gain.setValueAtTime(0.0001, now);
+  g1.gain.linearRampToValueAtTime(vol, now + 0.012);
+  g1.gain.exponentialRampToValueAtTime(0.0005, now + dur);
+
+  g2.gain.setValueAtTime(0.0001, now);
+  g2.gain.linearRampToValueAtTime(vol * 0.22, now + 0.008);
+  g2.gain.exponentialRampToValueAtTime(0.0001, now + dur * 0.45);
+
+  osc1.connect(g1);
+  osc2.connect(g2);
+  g1.connect(flt);
+  g2.connect(flt);
+  flt.connect(masterGain);
+
+  osc1.start(now);
+  osc2.start(now);
+  osc1.stop(now + dur + 0.04);
+  osc2.stop(now + dur + 0.04);
+}
+
+function playSoftBrushPerc(kind) {
+  initAudioEngine();
+  const now = audioCtx.currentTime;
+  if (kind === "kick") {
+    const osc = audioCtx.createOscillator();
+    const g = audioCtx.createGain();
+    osc.frequency.setValueAtTime(110, now);
+    osc.frequency.exponentialRampToValueAtTime(40, now + 0.14);
+    g.gain.setValueAtTime(0.28, now);
+    g.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    osc.connect(g);
+    g.connect(masterGain);
+    osc.start(now);
+    osc.stop(now + 0.22);
+  } else {
+    const dur = 0.06;
+    const len = Math.floor(audioCtx.sampleRate * dur);
+    const buf = audioCtx.createBuffer(1, len, audioCtx.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (len * 0.4));
+    const src = audioCtx.createBufferSource();
+    src.buffer = buf;
+    const flt = audioCtx.createBiquadFilter();
+    flt.type = "bandpass";
+    flt.frequency.value = 3200;
+    const g = audioCtx.createGain();
+    g.gain.value = 0.06;
+    src.connect(flt);
+    flt.connect(g);
+    g.connect(masterGain);
+    src.start(now);
+  }
+}
+
+/**
+ * Play Standalone "Ba-Da-Ba-Ba-Ba" Motif adapted to Current Mood & Burger Key!
+ */
+function playBaDaBaBaBa() {
+  initAudioEngine();
+  const b = getBurger();
+  const m = getMoodObj();
+  const root = b.rootHz * 1.5;
+  // Scale degrees 0 - 1 - 2 - 5 - 4 in current mood's scale (Major or Minor!)
+  const degrees = [0, 1, 2, 5, 4];
+  const delays = [0, 0.2, 0.4, 0.65, 1.0];
+  const durs = [0.28, 0.28, 0.28, 0.42, 0.85];
+
+  degrees.forEach((deg, i) => {
+    setTimeout(() => {
+      const semi = m.scale[deg];
+      playAcousticNote(semiToHz(root, semi), durs[i], 0.24, m.timbre);
+      if (moodStars >= 2) {
+        playAcousticNote(semiToHz(root * 0.5, semi), durs[i] * 1.2, 0.12, "felt_piano");
+      }
+    }, delays[i] * 1000);
+  });
+}
+
+/**
+ * COMPLETE SONG — SHARED SCORE COMPILER (beat-locked assembly)
+ * Realtime player & offline .wav renderer consume the SAME compiled score.
+ * 6 sections / 10 bars / 80 steps ≈ 23–31s depending on mood BPM (back to the tight length):
+ *   intro(1 bar ba-da-ba) → verseA(2, layers land on the half-bar thump)
+ *   → verseB(1, sparse) → pre(1, rising) → chorus(3, crown lands on downbeats)
+ *   → outro(2, tonic bloom + music-box chime)
+ * 卡点机制: every burger layer's impact frame is scheduled to land exactly on its
+ * beat tick — one step of fall before it, a kick + root "plop" accent on arrival.
+ */
+const SONG_LAYOUT = [
+  { id: "intro", bars: 1, pill: 0 },
+  { id: "verse", bars: 2, pill: 1 },
+  { id: "pre", bars: 2, pill: 2 },
+  { id: "chorus", bars: 3, pill: 3 },
+  { id: "outro", bars: 2, pill: 4 }
+];
+const STEPS_PER_BAR = 8;
+const songSectionBounds = (() => {
+  const arr = [];
+  let acc = 0;
+  SONG_LAYOUT.forEach(s => {
+    arr.push({ id: s.id, pill: s.pill, bars: s.bars, start: acc, end: acc + s.bars * STEPS_PER_BAR });
+    acc += s.bars * STEPS_PER_BAR;
+  });
+  return arr;
+})();
+const SONG_TOTAL_STEPS = songSectionBounds[songSectionBounds.length - 1].end;
+const songSection = id => songSectionBounds.find(s => s.id === id);
+
+function songSectionAt(step) {
+  for (const s of songSectionBounds) if (step < s.end) return s;
+  return songSectionBounds[songSectionBounds.length - 1];
+}
+
+let songScore = null;
+
+/* Which step each burger layer lands on (bottom-up assembly order) — the 卡点 map */
+function layerLandSteps(burger) {
+  const L = burger.layers.length;
+  const verseN = Math.ceil(L / 2);
+  const vs = songSection("verse"), ch = songSection("chorus");
+  const arr = [];
+  for (let i = 0; i < verseN; i++) arr.push(vs.start + i * 4);      // half-bar thumps
+  for (let i = 0; i < L - verseN; i++) arr.push(ch.start + i * 8);  // chorus downbeats
+  return arr;
+}
+
+function compileSongScore() {
+  const b = getBurger();
+  const m = getMoodObj();
+  const root = b.rootHz;
+  const ev = [];
+  const note = (step, dur, freq, vol, timbre) => ev.push({ step, dur, freq, vol, timbre: timbre || m.timbre });
+  const drum = (step, kind) => ev.push({ step, drum: kind });
+  const hz = (mult, semi) => mult * root * Math.pow(2, semi / 12);
+
+  // --- intro: ba-da-ba call + softer echo
+  [[0, 0], [1, 1], [2, 2], [4, 5], [6, 4]].forEach(([st, deg], i) => {
+    note(st, i === 4 ? 0.8 : 0.34, hz(2, m.scale[deg]), 0.24);
+    if (i === 4) note(st + 0.5, 1.1, hz(1, m.scale[0]), 0.1, "felt_piano");
+    note(st + 9, 0.3, hz(2.5, m.scale[Math.min(deg + 1, m.scale.length - 1)]), 0.12);
+  });
+  if (moodStars >= 2) m.chords[0].forEach(c => note(0, 1.8, hz(1, c), 0.07, "felt_piano"));
+
+  // --- verse: narrative melody, one loop with a lifted tail
+  const va = songSection("verse");
+  for (let i = 0; i < 16; i++) {
+    let deg = b.verseDegrees[i];
+    if (i >= 14) deg = Math.min(deg + 2, m.scale.length - 1);
+    note(va.start + i, 0.52, hz(2, m.scale[deg % m.scale.length]), 0.22);
+  }
+
+  // --- pre-chorus: two climbing bars, crescendo into the chorus
+  const pr = songSection("pre");
+  for (let i = 0; i < 16; i++) {
+    const deg = Math.min(2 + Math.floor(i * 6 / 15), m.scale.length - 1);
+    note(pr.start + i, 0.4, hz(2, m.scale[deg]), 0.13 + i * 0.009);
+    if (i % 2 === 0) drum(pr.start + i, i >= 12 ? "kick" : "brush");
+  }
+
+  // --- chorus: soaring hook + octave double, light four-on-floor
+  const ch = songSection("chorus");
+  for (let i = 0; i < ch.bars * 8; i++) {
+    const semi = m.scale[b.chorusDegrees[i % b.chorusDegrees.length] % m.scale.length];
+    note(ch.start + i, 0.55, hz(2, semi), 0.23);
+    if (moodStars >= 3) note(ch.start + i, 0.45, hz(4, semi), 0.08, "celesta");
+  }
+
+  // --- shared accompaniment (bar-relative) across body sections
+  ["verse", "pre", "chorus"].forEach(id => {
+    const s = songSection(id);
+    const isChorus = id === "chorus";
+    const isPre = id === "pre";
+    for (let bar = 0; bar < s.bars; bar++) {
+      const barStep = s.start + bar * 8;
+      const chord = m.chords[bar % m.chords.length];
+      if (moodStars >= 2) chord.forEach(c => note(barStep, isChorus ? 1.9 : 1.5, hz(1, c), isChorus ? 0.085 : 0.07, "felt_piano"));
+      if (moodStars >= 3 || isChorus) {
+        note(barStep, 0.7, hz(0.5, chord[0]), 0.18, "felt_piano");
+        note(barStep + 4, 0.7, hz(0.5, chord[0] + 7), 0.14, "felt_piano");
+      }
+      if (moodStars >= 4 || isPre || isChorus) {
+        for (let i = 0; i < 8; i += 2) {
+          note(barStep + i + 1, 0.26, hz(2, chord[(i / 2) % chord.length] + 12), isPre ? 0.09 : 0.1, "celesta");
+        }
+      }
+      if (isChorus) {
+        drum(barStep, "kick"); drum(barStep + 2, "brush");
+        drum(barStep + 4, "kick"); drum(barStep + 6, "brush");
+      } else if (moodStars >= 4 && id === "verse") {
+        drum(barStep, "kick"); drum(barStep + 4, "brush");
+      }
+    }
+  });
+
+  // --- 卡点: each layer landing = kick + root "plop" accent, exactly on its beat
+  layerLandSteps(b).forEach(st => {
+    drum(st, "kick");
+    note(st, 0.3, hz(1, m.chords[0][0]), 0.2, "felt_piano");
+    note(st, 0.22, hz(2, m.chords[0][0] + 12), 0.07, "celesta");
+  });
+
+  // --- outro: sparse farewell → tonic arpeggio bloom → music-box chime
+  const ot = songSection("outro");
+  for (let i = 0; i < 8; i += 2) {
+    note(ot.start + i, 0.9, hz(2, m.scale[b.verseDegrees[i % 16] % m.scale.length]), 0.16);
+  }
+  const tonic = m.chords[0];
+  tonic.forEach((c, i) => note(ot.start + 8 + i * 0.5, 2.0, hz(1, c), 0.1, "felt_piano"));
+  tonic.forEach((c, i) => note(ot.start + 9 + i * 0.25, 1.3, hz(2, c + 12), 0.07, "celesta"));
+  note(ot.start + 12, 2.8, hz(4, m.scale[0]), 0.2, "celesta");
+  note(ot.start + 12, 2.8, hz(1, 0), 0.12, "felt_piano");
+
+  ev.sort((a, b2) => a.step - b2.step);
+  return { events: ev, stepSec: 60 / m.bpm / 2, totalSteps: SONG_TOTAL_STEPS, bpm: m.bpm };
+}
+
+function playVoice(e) {
+  if (e.timbre === "pad") playPadNote(e.freq, e.dur, e.vol);
+  else if (e.timbre === "bass") playBassNote(e.freq, e.dur, e.vol);
+  else if (e.timbre === "pluck") playPluckNote(e.freq, e.dur, e.vol);
+  else playAcousticNote(e.freq, e.dur, e.vol, e.timbre);
+}
+
+function tickSongStep() {
+  if (!songScore) songScore = compileSongScore();
+  const sec = songSectionAt(songStep);
+
+  document.querySelectorAll(".sec-pill").forEach(el => {
+    el.classList.toggle("active", Number(el.dataset.sec) === sec.pill);
+  });
+
+  songScore.events.forEach(e => {
+    if (e.step < songStep || e.step >= songStep + 1) return;
+    const delay = Math.max(0, (e.step - songStep) * songScore.stepSec * 1000);
+    if (e.drum) {
+      if (delay === 0) playSoftBrushPerc(e.drum);
+      else setTimeout(() => playSoftBrushPerc(e.drum), delay);
+    } else if (delay === 0) {
+      playVoice(e);
+    } else {
+      setTimeout(() => playVoice(e), delay);
+    }
+  });
+
+  songStep++;
+  if (songStep >= SONG_TOTAL_STEPS) {
+    // loop back like a music box — it keeps playing until you pause
+    songStep = 0;
+    landedTicks = {};
+    dropStartReal = {};
+  }
+}
+
+function startSongPlayback(fromCurrent) {
+  initAudioEngine();
+  songScore = compileSongScore();
+  setEchoTempo(songScore.stepSec);
+  isPlaying = true;
+  if (!fromCurrent || songStep >= SONG_TOTAL_STEPS) {
+    songStep = 0;
+    landedTicks = {};
+    dropStartReal = {};
+  }
+  const totalSec = Math.round(SONG_TOTAL_STEPS * songScore.stepSec);
+  const durLabel = totalSec >= 60
+    ? `${Math.floor(totalSec / 60)}分${String(totalSec % 60).padStart(2, "0")}秒`
+    : `${totalSec}秒`;
+  document.getElementById("playBtn").innerHTML =
+    `<span>⏸ 正在播放这首歌 (约 ${durLabel} · 点击暂停)</span>`;
+  if (stepTimer) clearInterval(stepTimer);
+  tickSongStep();
+  stepTimer = setInterval(tickSongStep, songScore.stepSec * 1000);
+}
+
+function toggleSongPlayback() {
+  if (isPlaying) {
+    isPlaying = false;
+    if (stepTimer) clearInterval(stepTimer);
+    document.getElementById("playBtn").innerHTML = "<span>▶ 继续播放 · 从刚才暂停的地方接着听</span>";
+  } else {
+    startSongPlayback(songStep > 0);
+  }
+}
+
+/**
+ * OFFLINE FULL-SONG (.WAV) RENDERER
+ * Consumes the exact same compileSongScore() as realtime playback, plus
+ * early-reflection reverb taps, drum synthesis and a final fade-out,
+ * so the downloaded file contains one complete rendering of the current short song.
+ */
+function downloadCompleteSongWav() {
+  const score = compileSongScore();
+  const sampleRate = 24000;
+  const durationSec = score.totalSteps * score.stepSec + 4.0;
+  const totalSamples = Math.floor(sampleRate * durationSec);
+  const samples = new Float32Array(totalSamples);
+  const b = getBurger();
+
+  function mixNote(startSec, durSec, freq, amp, timbre, target) {
+    const startIdx = Math.floor(startSec * sampleRate);
+    const len = Math.floor(durSec * sampleRate);
+    if (timbre === "pad") {
+      // two detuned saws through a slowly sweeping one-pole lowpass (LFO wobble)
+      let lp = 0, p1 = 0, p2 = 0;
+      const det = 0.0035;
+      for (let i = 0; i < len && (startIdx + i) < totalSamples; i++) {
+        const t = i / sampleRate;
+        const cutoff = 520 + Math.min(1, t / (durSec * 0.6)) * 980 + Math.sin(2 * Math.PI * 0.16 * t) * 380;
+        const a = 1 - Math.exp(-2 * Math.PI * cutoff / sampleRate);
+        p1 += (freq * (1 - det)) / sampleRate;
+        p2 += (freq * (1 + det)) / sampleRate;
+        const x = (2 * (p1 - Math.floor(p1 + 0.5))) + (2 * (p2 - Math.floor(p2 + 0.5)));
+        lp += a * (x - lp);
+        const env = Math.min(1, t / Math.min(0.5, durSec * 0.3)) *
+          (t > durSec * 0.7 ? Math.max(0.0003, 1 - (t - durSec * 0.7) / (durSec * 0.3)) : 1);
+        target[startIdx + i] += lp * 0.5 * amp * env;
+      }
+      return;
+    }
+    if (timbre === "bass") {
+      for (let i = 0; i < len && (startIdx + i) < totalSamples; i++) {
+        const t = i / sampleRate;
+        const env = Math.min(1, i / (0.015 * sampleRate)) * Math.exp(-t * (2.8 / durSec));
+        const p = 2 * Math.PI * freq * t;
+        const grit = Math.sign(Math.sin(p)) * 0.16;
+        target[startIdx + i] += Math.tanh((Math.sin(p) * 0.95 + grit) * 1.6) * amp * env;
+      }
+      return;
+    }
+    // pluck / celesta / felt_piano: harmonic stack with brightness decay
+    const bright = timbre === "pluck" ? [0.6, 0.18, 0.12, 0.06] : timbre === "celesta" ? [0.6, 0.2, 0.14, 0.1] : [0.72, 0.2, 0.08, 0];
+    for (let i = 0; i < len && (startIdx + i) < totalSamples; i++) {
+      const t = i / sampleRate;
+      const env = Math.min(1, i / (0.008 * sampleRate)) * Math.exp(-t * (timbre === "pluck" ? 4.2 : 3.2) / durSec);
+      const p = 2 * Math.PI * freq * t;
+      let wave = 0;
+      for (let h = 1; h <= 4; h++) {
+        if (bright[h - 1]) wave += bright[h - 1] * Math.sin(p * h) * Math.exp(-t * h * 2 / durSec);
+      }
+      target[startIdx + i] += wave * amp * env;
+    }
+  }
+  function mixKick(startSec) {
+    const startIdx = Math.floor(startSec * sampleRate);
+    const len = Math.floor(0.2 * sampleRate);
+    for (let i = 0; i < len && (startIdx + i) < totalSamples; i++) {
+      const t = i / sampleRate;
+      const freq = 110 * Math.exp(-t * 12) + 40;
+      samples[startIdx + i] += Math.sin(2 * Math.PI * freq * t) * 0.26 * Math.exp(-t * 9);
+    }
+  }
+  function mixBrush(startSec) {
+    const startIdx = Math.floor(startSec * sampleRate);
+    const len = Math.floor(0.06 * sampleRate);
+    for (let i = 0; i < len && (startIdx + i) < totalSamples; i++) {
+      samples[startIdx + i] += (Math.random() * 2 - 1) * 0.055 * Math.exp(-i / (len * 0.4));
+    }
+  }
+
+  const leadBuf = new Float32Array(totalSamples);
+  score.events.forEach(e => {
+    const t = e.step * score.stepSec;
+    if (e.drum === "kick") mixKick(t);
+    else if (e.drum === "brush") mixBrush(t);
+    else if (e.timbre === "pluck") mixNote(t, e.dur, e.freq, e.vol, "pluck", leadBuf);
+    else mixNote(t, e.dur, e.freq, e.vol, e.timbre, samples);
+  });
+  for (let i = 0; i < totalSamples; i++) samples[i] += leadBuf[i];
+
+  // Dub echo bus: dotted-8th feedback delay on the plucks (psychedelic glue)
+  const dSamples = Math.floor(Math.min(1.8, score.stepSec * 1.5) * sampleRate);
+  const echo = new Float32Array(totalSamples);
+  for (let i = dSamples; i < totalSamples; i++) {
+    echo[i] = leadBuf[i - dSamples] + 0.34 * echo[i - dSamples];
+  }
+  for (let i = 0; i < totalSamples; i++) samples[i] += echo[i] * 0.22;
+
+  // Early-reflection reverb taps = cheap hall tail
+  const dry = samples.slice();
+  [[0.095, 0.18], [0.19, 0.1], [0.31, 0.05]].forEach(([d, g]) => {
+    const off = Math.floor(d * sampleRate);
+    for (let i = off; i < totalSamples; i++) samples[i] += dry[i - off] * g;
+  });
+
+  // Master soft-clip warmth
+  for (let i = 0; i < totalSamples; i++) samples[i] = Math.tanh(samples[i] * 1.1) * 0.95;
+
+  // Final fade-out so the song ends in silence, never a hard cut
+  const fadeLen = Math.floor(1.8 * sampleRate);
+  for (let i = 0; i < fadeLen; i++) {
+    samples[totalSamples - fadeLen + i] *= i / fadeLen;
+  }
+
+  // Soft Normalize & Encode WAV
+  const buf = new ArrayBuffer(44 + totalSamples * 2);
+  const view = new DataView(buf);
+  const writeStr = (o, s) => { for (let i = 0; i < s.length; i++) view.setUint8(o + i, s.charCodeAt(i)); };
+  writeStr(0, "RIFF");
+  view.setUint32(4, 36 + totalSamples * 2, true);
+  writeStr(8, "WAVE");
+  writeStr(12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, 1, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * 2, true);
+  view.setUint16(32, 2, true);
+  view.setUint16(34, 16, true);
+  writeStr(36, "data");
+  view.setUint32(40, totalSamples * 2, true);
+
+  for (let i = 0; i < totalSamples; i++) {
+    const s = Math.max(-1, Math.min(1, samples[i] * 0.85));
+    view.setInt16(44 + i * 2, s * 32767, true);
+  }
+
+  const blob = new Blob([buf], { type: "audio/wav" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `HappyMeal_${curOrder.orderNo}_${b.name}_${currentMood}_${moodStars}星.wav`;
+  a.click();
+}
+
+/**
+ * Export Standard 80mm ESC/POS Binary Stream for Store/Pocket Thermal Printers
+ */
+function exportEscPosBinary() {
+  // ASCII-only text avoids printer-specific Chinese code-page assumptions.
+  const bytes = [];
+  const encoder = new TextEncoder();
+  const writeText = value => encoder.encode(String(value).replace(/[^\x20-\x7E\n]/g, "?")).forEach(byte => bytes.push(byte));
+  const writeCmd = (...values) => bytes.push(...values);
+  writeCmd(0x1B, 0x40, 0x1B, 0x61, 0x01);
+  writeText("M - McDONALD'S MUSIC RECEIPT\n--------------------------------\n");
+  writeText(`ORDER: ${curOrder.orderNo}\nSTORE CODE: ${curOrder.storeCode}\n`);
+  writeText(`MOOD: ${currentMood} (${moodStars} STARS)\nTRACK: ${selectedBurger}\n`);
+  writeText("--------------------------------\nSCAN QR TO GET THIS SONG\n");
+
+  const url = songShareUrl();
+  const qrBytes = encoder.encode(url);
+  const storeLen = qrBytes.length + 3;
+  writeCmd(0x1D, 0x28, 0x6B, 0x04, 0x00, 0x31, 0x41, 0x32, 0x00);
+  writeCmd(0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x43, 0x06);
+  writeCmd(0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x45, 0x31);
+  writeCmd(0x1D, 0x28, 0x6B, storeLen & 0xFF, (storeLen >> 8) & 0xFF, 0x31, 0x50, 0x30);
+  qrBytes.forEach(byte => bytes.push(byte));
+  writeCmd(0x1D, 0x28, 0x6B, 0x03, 0x00, 0x31, 0x51, 0x30);
+  writeText("\n\n\n");
+  writeCmd(0x1D, 0x56, 0x42, 0x00);
+
+  const blob = new Blob([new Uint8Array(bytes)], { type: "application/octet-stream" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `thermal_pos_${shareSongId()}.escpos.bin`;
+  a.click();
+}
+
+/**
+ * Export a complete, ready-to-render YuE package (markdown).
+ * The in-app song is the instant Web Audio rendition; this package carries the full
+ * symbolic score + style tags so anyone with a GPU can render a studio version
+ * with the open-source model github.com/multimodal-art-projection/YuE
+ */
+function exportYuePackage() {
+  const b = getBurger();
+  const m = getMoodObj();
+  const score = compileSongScore();
+  const scaleName = currentMood === "happy" ? "Major" : currentMood === "numb" ? "Lydian" : "Natural Minor (Aeolian)";
+  const chordLine = m.chords.map((ch, i) => `  - Bar ${i + 1}: [${ch.join(", ")}] semitones over root ${b.rootHz.toFixed(1)} Hz`).join("\n");
+  const motif = (name, arr) => arr.map((d, i) => (i % 8 === 0 ? "\n  " : "") + String(m.scale[d % m.scale.length]).padStart(3)).join(" ");
+  const secs = SONG_LAYOUT.map(s => `  - ${s.id}: ${s.bars} bars`);
+  const md = [
+    "# HappyMeal.exe × YuE 渲染包",
+    "",
+    `> 这顿饭的歌：${b.songTitle}`,
+    `> 门店：${curOrder.storeName} (#${curOrder.storeCode}) · 订单：${curOrder.orderNo}`,
+    `> 心情：${m.label} (${moodStars}★) · BPM ${m.bpm} · 音阶：${scaleName}`,
+    "",
+    "## Style Tags (喂给 YuE 的风格提示)",
+    "```",
+  `genre: pop, healing, warm lo-fi; mood: ${currentMood === "down" ? "gentle, comforting" : currentMood === "numb" ? "dreamy, floating" : "bright, playful"};`,
+  `bpm: ${m.bpm}; instruments: ${m.timbre === "felt_piano" ? "felt piano, cello, soft brushes" : m.timbre === "marimba" ? "marimba, warm pad" : "celesta, e-piano"}; vocal: instrumental (melody only);`,
+    "```",
+    "",
+    `## Song Structure (${SONG_LAYOUT.reduce((sum, section) => sum + section.bars, 0)} bars)`,
+    "```",
+    secs.join("\n"),
+    "```",
+    "",
+    "## Harmony (semitone offsets from burger root)",
+    "```",
+    chordLine,
+    "```",
+    "",
+    "## Melody Motifs (scale semitones per 8th-note step)",
+    "```",
+    `verse:  ${motif("verse", b.verseDegrees)}`,
+    `chorus: ${motif("chorus", b.chorusDegrees)}`,
+    "```",
+    "",
+    "## How to render",
+    "1. Clone https://github.com/multimodal-art-projection/YuE and follow its install (CUDA GPU required).",
+    "2. Use the style tags above as the genre/metadata prompt; this package is melody-only, no lyrics needed.",
+    "3. The symbolic score above is the ground truth of the in-app rendition — keep its structure and harmony.",
+    "",
+    `Generated ${new Date().toLocaleString("zh-CN")} by HappyMeal.exe · events: ${score.events.length} notes/drums over ${score.totalSteps} steps (${Math.round(score.totalSteps * score.stepSec)}s)`,
+    "Symbolic-score bridging inspired by YuE — many thanks to the multimodal-art-projection authors."
+  ].join("\n");
+  const blob = new Blob([md], { type: "text/markdown" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = `YuE_Package_${curOrder.orderNo}_${b.id}_${currentMood}${moodStars}.md`;
+  a.click();
+}
+
+/* ================= Real QR encoder (byte mode, ECC L, versions 1-9, zero dependency) ================= */
+const QR_GF_EXP = new Array(512);
+const QR_GF_LOG = new Array(256);
+(function () {
+  let x = 1;
+  for (let i = 0; i < 255; i++) { QR_GF_EXP[i] = x; QR_GF_LOG[x] = i; x <<= 1; if (x & 0x100) x ^= 0x11d; }
+  for (let i = 255; i < 512; i++) QR_GF_EXP[i] = QR_GF_EXP[i - 255];
+})();
+function qrGmul(a, b) { return (a === 0 || b === 0) ? 0 : QR_GF_EXP[QR_GF_LOG[a] + QR_GF_LOG[b]]; }
+/* [dataCodewordsPerBlock, ecCodewordsPerBlock, blocks] for error level L */
+const QR_L_TABLE = { 1: [19, 7, 1], 2: [34, 10, 1], 3: [55, 15, 1], 4: [80, 20, 1], 5: [108, 26, 1], 6: [68, 18, 2], 7: [78, 20, 2], 8: [97, 24, 2], 9: [116, 30, 2] };
+const QR_ALIGN = { 1: [], 2: [6, 18], 3: [6, 22], 4: [6, 26], 5: [6, 30], 6: [6, 34], 7: [6, 22, 38], 8: [6, 24, 42], 9: [6, 26, 46] };
+
+function qrRsGen(degree) {
+  let g = [1];
+  for (let i = 0; i < degree; i++) {
+    const ng = new Array(g.length + 1).fill(0);
+    for (let j = 0; j < g.length; j++) {
+      ng[j] ^= g[j];
+      ng[j + 1] ^= qrGmul(g[j], QR_GF_EXP[i]);
+    }
+    g = ng;
+  }
+  return g;
+}
+function qrRemainder(data, degree) {
+  const gen = qrRsGen(degree);
+  const res = new Array(degree).fill(0);
+  data.forEach(d => {
+    const factor = d ^ res[0];
+    res.shift(); res.push(0);
+    if (factor !== 0) for (let i = 0; i < degree; i++) res[i] ^= qrGmul(gen[i + 1], factor);
+  });
+  return res;
+}
+function qrFormatBits(mask) {
+  const data = (1 << 3) | mask; // error level L = 01
+  let d = data << 10;
+  for (let i = 14; i >= 10; i--) if ((d >> i) & 1) d ^= 0x537 << (i - 10);
+  return ((data << 10) | d) ^ 0x5412;
+}
+function qrVersionBits(v) {
+  let d = v << 12;
+  for (let i = 17; i >= 12; i--) if ((d >> i) & 1) d ^= 0x1f25 << (i - 12);
+  return (v << 12) | d;
+}
+const QR_MASKS = [
+  (r, c) => (r + c) % 2 === 0,
+  (r, c) => r % 2 === 0,
+  (r, c) => c % 3 === 0,
+  (r, c) => (r + c) % 3 === 0,
+  (r, c) => (Math.floor(r / 2) + Math.floor(c / 3)) % 2 === 0,
+  (r, c) => (r * c) % 2 + (r * c) % 3 === 0,
+  (r, c) => ((r * c) % 2 + (r * c) % 3) % 2 === 0,
+  (r, c) => ((r * c) % 3 + (r + c) % 2) % 2 === 0
+];
+
+function qrMakeMatrix(text) {
+  const bytes = Array.from(new TextEncoder().encode(text));
+  let version = 0;
+  for (let v = 1; v <= 9; v++) {
+    if ((12 + bytes.length * 8 + 7) >> 3 <= QR_L_TABLE[v][0] * QR_L_TABLE[v][2]) { version = v; break; }
+  }
+  if (!version) throw new Error("QR payload too long");
+
+  // --- bitstream: mode(4) + count(8, v1-9) + data + terminator + pads
+  const bits = [];
+  const pushBits = (val, n) => { for (let i = n - 1; i >= 0; i--) bits.push((val >> i) & 1); };
+  pushBits(4, 4);
+  pushBits(bytes.length, 8);
+  bytes.forEach(by => pushBits(by, 8));
+  const [dataPerBlock, ecPerBlock, numBlocks] = QR_L_TABLE[version];
+  const dataCwTotal = dataPerBlock * numBlocks;
+  pushBits(0, Math.min(4, dataCwTotal * 8 - bits.length));
+  while (bits.length % 8) bits.push(0);
+  const dataCw = [];
+  for (let i = 0; i < bits.length; i += 8) {
+    let by = 0;
+    for (let j = 0; j < 8; j++) by = (by << 1) | bits[i + j];
+    dataCw.push(by);
+  }
+  for (let p = 0xec; dataCw.length < dataCwTotal; p ^= 0xec ^ 0x11) dataCw.push(p);
+
+  // --- RS + interleave
+  const blocks = [];
+  for (let i = 0; i < numBlocks; i++) {
+    const blk = dataCw.slice(i * dataPerBlock, (i + 1) * dataPerBlock);
+    blocks.push({ data: blk, ec: qrRemainder(blk, ecPerBlock) });
+  }
+  const final = [];
+  for (let i = 0; i < dataPerBlock; i++) blocks.forEach(bk => final.push(bk.data[i]));
+  for (let i = 0; i < ecPerBlock; i++) blocks.forEach(bk => final.push(bk.ec[i]));
+
+  // --- function patterns
+  const size = version * 4 + 17;
+  const M = Array.from({ length: size }, () => new Array(size).fill(null));
+  const placeFinder = (r0, c0) => {
+    for (let dr = -1; dr <= 7; dr++) for (let dc = -1; dc <= 7; dc++) {
+      const r = r0 + dr, c = c0 + dc;
+      if (r < 0 || c < 0 || r >= size || c >= size) continue;
+      const on = dr >= 0 && dr <= 6 && dc >= 0 && dc <= 6 &&
+        (dr === 0 || dr === 6 || dc === 0 || dc === 6 || (dr >= 2 && dr <= 4 && dc >= 2 && dc <= 4));
+      M[r][c] = on ? 1 : 0;
+    }
+  };
+  placeFinder(0, 0); placeFinder(0, size - 7); placeFinder(size - 7, 0);
+  // alignment BEFORE timing (timing yields into alignment cells, per spec)
+  for (const r of QR_ALIGN[version]) for (const c of QR_ALIGN[version]) {
+    if (M[r][c] !== null) continue;
+    for (let dr = -2; dr <= 2; dr++) for (let dc = -2; dc <= 2; dc++) {
+      M[r + dr][c + dc] = (Math.max(Math.abs(dr), Math.abs(dc)) !== 1) ? 1 : 0;
+    }
+  }
+  for (let i = 8; i < size - 8; i++) {
+    if (M[6][i] === null) M[6][i] = i % 2 === 0 ? 1 : 0;
+    if (M[i][6] === null) M[i][6] = i % 2 === 0 ? 1 : 0;
+  }
+  M[size - 8][8] = 1; // dark module
+  for (let i = 0; i <= 8; i++) {
+    if (M[8][i] === null) M[8][i] = 0;
+    if (M[i][8] === null) M[i][8] = 0;
+  }
+  for (let i = 0; i < 8; i++) { // second format copy: exactly 8 cells per strip
+    if (M[size - 1 - i][8] === null) M[size - 1 - i][8] = 0;
+    if (M[8][size - 1 - i] === null) M[8][size - 1 - i] = 0;
+  }
+  if (version >= 7) {
+    const vb = qrVersionBits(version);
+    for (let i = 0; i < 18; i++) {
+      const bit = (vb >> i) & 1;
+      M[size - 11 + (i % 3)][Math.floor(i / 3)] = bit;
+      M[Math.floor(i / 3)][size - 11 + (i % 3)] = bit;
+    }
+  }
+
+  // --- data cell placement order (two-column zigzag, skip col 6)
+  const order = [];
+  let upward = true;
+  for (let col = size - 1; col >= 0; col -= 2) {
+    if (col === 6) col--;
+    for (let i = 0; i < size; i++) {
+      const r = upward ? size - 1 - i : i;
+      if (M[r][col] === null) order.push([r, col]);
+      if (M[r][col - 1] === null) order.push([r, col - 1]);
+    }
+    upward = !upward;
+  }
+  const totalBits = final.length * 8;
+
+  const setFormat = (mat, maskIdx) => {
+    const fb = qrFormatBits(maskIdx);
+    const bit = (i) => (fb >> i) & 1;
+    // First copy: column 8 (rows 0..8, skipping timing row 6) + row 8 (cols 0..5)
+    for (let i = 0; i <= 5; i++) mat[i][8] = bit(i);
+    mat[7][8] = bit(6);
+    mat[8][8] = bit(7);
+    mat[8][7] = bit(8);
+    for (let i = 9; i < 15; i++) mat[8][14 - i] = bit(i);
+    // Second copy: row 8 (right edge) + column 8 (bottom edge)
+    for (let i = 0; i < 8; i++) mat[8][size - 1 - i] = bit(i);
+    for (let i = 8; i < 15; i++) mat[size - 15 + i][8] = bit(i);
+  };
+
+  const penalty = (mat) => {
+    let score = 0;
+    for (let axis = 0; axis < 2; axis++) {
+      for (let i = 0; i < size; i++) {
+        let run = 1;
+        for (let j = 1; j <= size; j++) {
+          const cur = j < size ? (axis ? mat[j][i] : mat[i][j]) : -1;
+          const prev = axis ? mat[j - 1][i] : mat[i][j - 1];
+          if (j < size && cur === prev) run++;
+          else { if (run >= 5) score += 3 + (run - 5); run = 1; }
+        }
+      }
+    }
+    for (let r = 0; r < size - 1; r++) for (let c = 0; c < size - 1; c++) {
+      const v = mat[r][c];
+      if (mat[r][c + 1] === v && mat[r + 1][c] === v && mat[r + 1][c + 1] === v) score += 3;
+    }
+    const p1 = [1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0], p2 = [0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 1];
+    const checkLine = (get) => {
+      for (let st = 0; st + 11 <= size; st++) {
+        let m1 = true, m2 = true;
+        for (let k = 0; k < 11; k++) {
+          const v = get(st + k);
+          if (v !== p1[k]) m1 = false;
+          if (v !== p2[k]) m2 = false;
+        }
+        if (m1 || m2) score += 40;
+      }
+    };
+    for (let i = 0; i < size; i++) { checkLine(j => mat[i][j]); checkLine(j => mat[j][i]); }
+    let dark = 0;
+    mat.forEach(row => row.forEach(v => dark += v));
+    score += Math.floor(Math.abs(dark * 100 / (size * size) - 50) / 5) * 10;
+    return score;
+  };
+
+  let best = null, bestScore = Infinity, bestMask = 0;
+  for (let maskIdx = 0; maskIdx < 8; maskIdx++) {
+    const mat = M.map(row => row.slice());
+    order.forEach(([r, c], idx) => {
+      const bit = idx < totalBits ? ((final[idx >> 3] >> (7 - (idx & 7))) & 1) : 0;
+      mat[r][c] = bit ^ (QR_MASKS[maskIdx](r, c) ? 1 : 0);
+    });
+    setFormat(mat, maskIdx);
+    const sc = penalty(mat);
+    if (sc < bestScore) { bestScore = sc; best = mat; bestMask = maskIdx; }
+  }
+  return best;
+}
+
+/* Public share links contain only an opaque song ID and arrangement parameters. */
+const SHARE_BASE_OVERRIDE = "https://chloeunterwegs.github.io/HappyMeal.exe/web/index.html";
+function shareSongId() {
+  let h = 2166136261;
+  for (const ch of String(curOrder.orderNo || "MCD-DEMO")) {
+    h ^= ch.charCodeAt(0);
+    h = Math.imul(h, 16777619);
+  }
+  return "HM" + (h >>> 0).toString(36).toUpperCase();
+}
+function songShareUrl() {
+  let base = SHARE_BASE_OVERRIDE;
+  if (!base && location.origin && location.origin.startsWith("http")) base = location.origin + location.pathname;
+  if (!base) return `mcd://happymeal/${shareSongId()}/${selectedBurger}/${currentMood}/${moodStars}`;
+  return `${base}#s=${shareSongId()}~${selectedBurger}~${currentMood}~${moodStars}`;
+}
+
+function buildQrSvg(text, pixelColor = "#1F1E1B") {
+  const M = qrMakeMatrix(text);
+  const n = M.length;
+  const quiet = 4;
+  let rects = "";
+  for (let r = 0; r < n; r++) for (let c = 0; c < n; c++) {
+    if (M[r][c]) rects += `<rect x="${(c + quiet) * 4}" y="${(r + quiet) * 4}" width="4" height="4" fill="${pixelColor}"/>`;
+  }
+  const dim = (n + quiet * 2) * 4;
+  return `<svg viewBox="0 0 ${dim} ${dim}" width="100%" height="100%" xmlns="http://www.w3.org/2000/svg"><rect width="${dim}" height="${dim}" fill="#FFFFFF"/>${rects}</svg>`;
+}
+
+/* 依餐品与心情即兴的一两句话 —— 小票上唯一的一段文案（同一订单永远同一句，扫码可复现） */
+function improviseLine(b, m) {
+  let h = 2166136261;
+  for (const ch of curOrder.orderNo + b.id + currentMood) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+  const pick = arr => arr[Math.abs(h ^ (h >>> 13)) % arr.length];
+  const store = (curOrder.storeName || "").replace("麦当劳", "").slice(0, 6);
+  const openers = {
+    happy: ["今天的开心，", "值得庆祝的一天，", "心情正好的你，"],
+    numb: ["脑子还在飘的日子，", "什么都不想的时刻，", "电量不足的下午，"],
+    down: ["有点 Down 的日子，", "需要被接住的今晚，", "不想说话的时候，"]
+  };
+  const closers = {
+    happy: [`${b.name}替你盖章。`, `就着${store || "这里"}的灯光再加一点甜。`, `这一口，是自己挣来的玩具。`],
+    numb: [`${b.name}陪你慢慢回神。`, `先吃一口，别的等会儿。`, `让熟悉的味道轻轻落地。`],
+    down: [`${b.name}最懂怎么抱人。`, `让这一口温热慢慢来。`, `${b.name}陪你再待一会儿。`]
+  };
+  return pick(openers[currentMood]) + pick(closers[currentMood]);
+}
+
+function renderAllControlsAndReceipts() {
+  const b = getBurger();
+  const m = getMoodObj();
+
+  // Render Burger Chips
+  const bGrid = document.getElementById("burgerGrid");
+  bGrid.innerHTML = "";
+  MENU_DB.burgers.forEach(item => {
+    const el = document.createElement("div");
+    el.className = "item-chip" + (selectedBurger === item.id ? " selected" : "");
+    el.innerHTML = `
+      <span>${item.emoji} ${item.name}</span>
+      <span class="sub">¥${item.price}</span>
+      ${item.limited ? `<span class="new-badge">${item.limited}</span>` : ""}
+    `;
+    el.addEventListener("click", () => {
+      selectedBurger = item.id;
+      renderAllControlsAndReceipts();
+      playAcousticNote(item.rootHz * 2, 0.35, 0.22, m.timbre);
+      if (isPlaying) startSongPlayback();
+    });
+    bGrid.appendChild(el);
+  });
+
+  // Render Side Chips
+  const sGrid = document.getElementById("sideGrid");
+  sGrid.innerHTML = "";
+  MENU_DB.sides.forEach(item => {
+    const on = selectedSides.has(item.id);
+    const el = document.createElement("div");
+    el.className = "item-chip" + (on ? " selected" : "");
+    el.innerHTML = `
+      <span>${item.emoji} ${item.name}</span>
+      <span class="sub">${on ? "已加" : "+"}</span>
+      ${item.limited ? `<span class="new-badge">${item.limited}</span>` : ""}
+    `;
+    el.addEventListener("click", () => {
+      if (on && selectedSides.size > 1) selectedSides.delete(item.id);
+      else selectedSides.add(item.id);
+      renderAllControlsAndReceipts();
+      playAcousticNote(b.rootHz * 2.5, 0.28, 0.18, "celesta");
+    });
+    sGrid.appendChild(el);
+  });
+
+  // Render Drink Chips
+  const dGrid = document.getElementById("drinkGrid");
+  dGrid.innerHTML = "";
+  MENU_DB.drinks.forEach(item => {
+    const on = selectedDrinks.has(item.id);
+    const el = document.createElement("div");
+    el.className = "item-chip" + (on ? " selected" : "");
+    el.innerHTML = `
+      <span>${item.emoji} ${item.name}</span>
+      <span class="sub">${on ? "已加" : "+"}</span>
+      ${item.limited ? `<span class="new-badge">${item.limited}</span>` : ""}
+    `;
+    el.addEventListener("click", () => {
+      if (on && selectedDrinks.size > 1) selectedDrinks.delete(item.id);
+      else selectedDrinks.add(item.id);
+      renderAllControlsAndReceipts();
+      playAcousticNote(b.rootHz * 3, 0.3, 0.16, "celesta");
+    });
+    dGrid.appendChild(el);
+  });
+
+  // Mood & Stars UI
+  document.querySelectorAll(".mood-card").forEach(mc => {
+    mc.classList.toggle("active", mc.dataset.mood === currentMood);
+  });
+  document.querySelectorAll(".star-btn").forEach(st => {
+    st.classList.toggle("lit", Number(st.dataset.val) <= moodStars);
+  });
+  document.getElementById("arrangementHint").textContent = STAR_DESCRIPTIONS[moodStars];
+
+  // Compute totals & strings
+  let kcal = b.kcal;
+  let price = b.price;
+  const sNames = [];
+  const dNames = [];
+  MENU_DB.sides.forEach(s => { if (selectedSides.has(s.id)) { kcal += s.kcal; price += s.price; sNames.push(s.name); } });
+  MENU_DB.drinks.forEach(d => { if (selectedDrinks.has(d.id)) { kcal += d.kcal; price += d.price; dNames.push(d.name); } });
+
+  const starsStr = "★".repeat(moodStars) + "☆".repeat(5 - moodStars);
+  const oneLiner = improviseLine(b, m);
+
+  document.getElementById("kcalBadge").textContent = `${kcal} kcal · ¥${price.toFixed(1)}`;
+  document.getElementById("moodBadge").textContent = `${m.label} · ${starsStr}`;
+
+  // Update Digital Collectible Ticket
+  document.getElementById("dtSongTitle").textContent = b.songTitle;
+  document.getElementById("dtSerial").textContent = `ORDER #${curOrder.orderNo} · ${curOrder.storeName} (#${curOrder.storeCode})`;
+  const extrasStr = (curOrder.extras || []).join("/");
+  document.getElementById("dtItems").textContent = `${b.name}${sNames.length ? " + " + sNames.join("/") : ""}${dNames.length ? " + " + dNames.join("/") : ""}${extrasStr ? " + " + extrasStr : ""}`;
+  document.getElementById("dtMoodKey").textContent = `${m.label} (${moodStars}★) · ${m.modeDesc}`;
+  document.getElementById("dtLyrics").textContent = oneLiner;
+
+  const shareUrl = songShareUrl();
+  document.getElementById("dtQrHash").textContent = "扫码直达 · " + shareUrl;
+  document.getElementById("digitalQrBox").innerHTML = buildQrSvg(shareUrl, "#1F1E1B");
+
+  // Update Physical 80mm Thermal Print Ticket
+  document.getElementById("thStore").textContent = `门店: ${curOrder.storeName}`;
+  document.getElementById("thCode").textContent = `#${curOrder.storeCode}`;
+  document.getElementById("thOrder").textContent = `单号: ${curOrder.orderNo}`;
+  document.getElementById("thTime").textContent = curOrder.time;
+  document.getElementById("thMood").textContent = `心情: ${m.label} (${moodStars}★)`;
+  document.getElementById("thKcal").textContent = `${kcal} kcal`;
+  document.getElementById("thItems").textContent = `${b.name}${sNames.length ? " + " + sNames.join("/") : ""}${dNames.length ? " + " + dNames.join("/") : ""}`;
+  document.getElementById("thLyrics").textContent = oneLiner;
+  document.getElementById("thermalQrBox").innerHTML = buildQrSvg(shareUrl, "#000000");
+}
+
+/**
+ * MEAL STAGE ANIMATION CANVAS (Burger Layer Stack)
+ */
+const canvas = document.getElementById("vinylCanvas");
+const ctx = canvas.getContext("2d");
+
+/* Responsive stage: lock 620x290 world aspect at any container width, render at device
+   pixel ratio so sprites never stretch and stay sharp on retina / phones. */
+function fitStageCanvas() {
+  const dpr = window.devicePixelRatio || 1;
+  const cssW = canvas.clientWidth || 620;
+  const cssH = cssW * 290 / 620;
+  const pxW = Math.round(cssW * dpr);
+  const pxH = Math.round(cssH * dpr);
+  if (canvas.width !== pxW || canvas.height !== pxH) {
+    canvas.width = pxW;
+    canvas.height = pxH;
+  }
+}
+window.addEventListener("resize", fitStageCanvas);
+fitStageCanvas();
+
+function drawRoundedRect(x, y, w, h, r, fill, stroke) {
+  ctx.beginPath();
+  ctx.roundRect(x, y, w, h, r);
+  if (fill) { ctx.fillStyle = fill; ctx.fill(); }
+  if (stroke) { ctx.strokeStyle = stroke; ctx.lineWidth = 2; ctx.stroke(); }
+}
+
+/* ---- Hand-drawn meal sprites: each side & drink gets its own silhouette ---- */
+function drawSideSprite(item, cx, groundY, bob, s) {
+  const y = groundY + bob;
+  const ink = "#181715";
+  ctx.save();
+  ctx.translate(cx, y);
+  ctx.scale(s, s);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = ink;
+  const t = animTick;
+  switch (item.id) {
+    case "fries": {
+      for (let i = 0; i < 6; i++) {
+        const fh = 26 + (i % 3) * 8 + Math.sin(t * 3 + i) * (isPlaying ? 5 : 1.5);
+        drawRoundedRect(-18 + i * 7, -34 - fh, 6, fh + 12, 2, "#F0B429", ink);
+      }
+      drawRoundedRect(-21, -34, 42, 34, 5, "#C83328", ink);
+      ctx.fillStyle = "#F0B429";
+      ctx.font = "bold 10px monospace";
+      ctx.fillText("M", -4, -12);
+      break;
+    }
+    case "nuggets": {
+      drawRoundedRect(-20, -26, 40, 26, 5, "#C83328", ink);
+      [[-10, -32], [2, -37], [13, -31]].forEach(([nx, ny], i) => {
+        const n = Math.sin(t * 2.6 + i * 2) * (isPlaying ? 2.5 : 0.8);
+        ctx.beginPath();
+        ctx.ellipse(nx, ny + n, 8, 6, 0.4, 0, Math.PI * 2);
+        ctx.fillStyle = "#E3A44A"; ctx.fill(); ctx.stroke();
+      });
+      break;
+    }
+    case "wings": {
+      drawRoundedRect(-20, -22, 40, 22, 5, "#C83328", ink);
+      for (let i = 0; i < 2; i++) {
+        const wy = -30 - i * 6 + Math.sin(t * 2.2 + i * 3) * (isPlaying ? 3 : 1);
+        ctx.save();
+        ctx.translate(-6 + i * 14, wy);
+        ctx.rotate(-0.5 + i * 0.5);
+        drawRoundedRect(-4, -14, 9, 22, 4, "#C98A3B", ink);
+        ctx.beginPath(); ctx.arc(0.5, 10, 3.4, 0, Math.PI * 2);
+        ctx.fillStyle = "#FAF8F4"; ctx.fill(); ctx.stroke();
+        ctx.restore();
+      }
+      break;
+    }
+    case "taro_pie": {
+      drawRoundedRect(-22, -22, 44, 22, 6, "#E8B04B", ink);
+      ctx.strokeStyle = "#C98A2B"; ctx.lineWidth = 1.5;
+      for (let i = 0; i < 6; i++) {
+        ctx.beginPath(); ctx.arc(-18 + i * 7.4, -20, 2.6, Math.PI, 0); ctx.stroke();
+      }
+      ctx.fillStyle = "#8E6FB8";
+      ctx.fillRect(-13, -14, 26, 3);
+      ctx.strokeStyle = "rgba(250,248,244,0.55)"; ctx.lineWidth = 1.5;
+      const sy = -30 + Math.sin(t * 2) * 2;
+      ctx.beginPath();
+      ctx.moveTo(-4, sy); ctx.quadraticCurveTo(0, sy - 5, -4, sy - 10);
+      ctx.moveTo(6, sy - 2); ctx.quadraticCurveTo(10, sy - 7, 6, sy - 12);
+      ctx.stroke();
+      break;
+    }
+    case "hashbrown": {
+      drawRoundedRect(-21, -15, 42, 15, 5, "#DFA54A", ink);
+      ctx.fillStyle = "#B8862B";
+      for (let r = 0; r < 2; r++) for (let c = 0; c < 6; c++) {
+        ctx.fillRect(-17 + c * 6.6 + (r % 2) * 3, -11 + r * 5, 2.2, 2.2);
+      }
+      break;
+    }
+    case "gd_box": {
+      for (let i = 0; i < 3; i++) drawRoundedRect(-12 + i * 8, -46, 6, 18, 2, "#F0B429", ink);
+      drawRoundedRect(-18, -34, 36, 34, 5, "#2B2B2B", ink);
+      ctx.fillStyle = "#F0B429"; ctx.fillRect(-18, -23, 36, 4);
+      const cb = Math.sin(t * 2.4) * (isPlaying ? 2 : 0.6);
+      ctx.beginPath(); ctx.ellipse(8, -38 + cb, 9, 6, -0.3, 0, Math.PI * 2);
+      ctx.fillStyle = "#D9531E"; ctx.fill(); ctx.stroke();
+      break;
+    }
+    default: {
+      drawRoundedRect(-16, -24, 32, 24, 5, item.color, ink);
+    }
+  }
+  ctx.restore();
+  ctx.font = `${Math.max(8, Math.round(9 * s))}px 'PingFang SC', monospace`;
+  ctx.fillStyle = "rgba(234,227,210,0.7)";
+  ctx.textAlign = "center";
+  ctx.fillText(item.name, cx, y + 15);
+  ctx.textAlign = "left";
+}
+
+function drawDrinkSprite(item, cx, groundY, bob, s) {
+  const y = groundY + bob;
+  const ink = "#181715";
+  ctx.save();
+  ctx.translate(cx, y);
+  ctx.scale(s, s);
+  ctx.lineWidth = 2;
+  ctx.strokeStyle = ink;
+  const t = animTick;
+  const straw = (color) => {
+    ctx.strokeStyle = color; ctx.lineWidth = 3.5;
+    ctx.beginPath(); ctx.moveTo(6, -44); ctx.lineTo(12, -62); ctx.stroke();
+    ctx.strokeStyle = ink; ctx.lineWidth = 2;
+  };
+  switch (item.id) {
+    case "coke": {
+      straw("#F0B429");
+      drawRoundedRect(-16, -44, 34, 44, 5, "#C83328", ink);
+      ctx.fillStyle = "#FAF8F4"; ctx.fillRect(-16, -30, 34, 7);
+      break;
+    }
+    case "zero_coke": {
+      straw("#ECEFF1");
+      drawRoundedRect(-16, -44, 34, 44, 5, "#263238", ink);
+      ctx.fillStyle = "#B0BEC5"; ctx.fillRect(-16, -30, 34, 6);
+      ctx.fillStyle = "rgba(250,248,244,0.85)";
+      ctx.fillRect(-9, -40, 6, 5); ctx.fillRect(1, -37, 6, 5);
+      break;
+    }
+    case "americano": {
+      straw("#6F4E37");
+      drawRoundedRect(-16, -44, 34, 44, 5, "#F1E8D8", ink);
+      ctx.fillStyle = "#6F4E37"; ctx.fillRect(-14, -42, 30, 9);
+      ctx.fillStyle = "#C83328"; ctx.font = "bold 11px serif";
+      ctx.fillText("M", -3, -13);
+      break;
+    }
+    case "mcflurry": {
+      ctx.strokeStyle = "#F0B429"; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.moveTo(10, -50); ctx.lineTo(14, -64); ctx.stroke();
+      ctx.strokeStyle = ink; ctx.lineWidth = 2;
+      drawRoundedRect(-15, -40, 32, 40, 5, "#EDF3F5", ink);
+      ctx.beginPath(); ctx.ellipse(1, -40, 17, 9, 0, Math.PI, 0);
+      ctx.fillStyle = "#FAFAF6"; ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#3E2723";
+      const ob = Math.sin(t * 2) * 1;
+      ctx.fillRect(-8, -44 + ob, 4, 3); ctx.fillRect(2, -42 - ob, 4, 3); ctx.fillRect(-2, -48, 4, 3);
+      break;
+    }
+    case "ash_cone": {
+      ctx.beginPath();
+      ctx.moveTo(-13, -30); ctx.lineTo(13, -30); ctx.lineTo(0, 2); ctx.closePath();
+      ctx.fillStyle = "#9AA5AD"; ctx.fill(); ctx.stroke();
+      ctx.strokeStyle = "rgba(24,23,21,0.35)"; ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(-9, -24); ctx.lineTo(6, -8);
+      ctx.moveTo(-2, -26); ctx.lineTo(8, -12);
+      ctx.stroke();
+      ctx.strokeStyle = ink; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.ellipse(0, -32, 13, 8, 0, Math.PI, 0);
+      ctx.fillStyle = "#CFD8DC"; ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(-3, -37, 7, 5, 0.3, 0, Math.PI * 2);
+      ctx.fillStyle = "#B0BEC5"; ctx.fill(); ctx.stroke();
+      break;
+    }
+    case "blueberry": {
+      drawRoundedRect(-15, -40, 32, 40, 5, "#EDE7F6", ink);
+      ctx.beginPath(); ctx.ellipse(1, -40, 17, 9, 0, Math.PI, 0);
+      ctx.fillStyle = "#9575CD"; ctx.fill(); ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(-2, -45, 7, 5, 0.3, 0, Math.PI * 2);
+      ctx.fillStyle = "#7E57C2"; ctx.fill(); ctx.stroke();
+      ctx.fillStyle = "#5E35B1";
+      [[-6, -44], [4, -42], [0, -49]].forEach(([px, py], i) => {
+        const pb = Math.sin(t * 3 + i * 2) * 1.2;
+        ctx.beginPath(); ctx.arc(px, py + pb, 2.4, 0, Math.PI * 2); ctx.fill();
+      });
+      break;
+    }
+    default: {
+      straw("#F0B429");
+      drawRoundedRect(-15, -42, 32, 42, 5, item.color, ink);
+    }
+  }
+  ctx.restore();
+  ctx.font = `${Math.max(8, Math.round(9 * s))}px 'PingFang SC', monospace`;
+  ctx.fillStyle = "rgba(234,227,210,0.7)";
+  ctx.textAlign = "center";
+  ctx.fillText(item.name, cx, y + 15);
+  ctx.textAlign = "left";
+}
+
+function drawMealStage() {
+  requestAnimationFrame(drawMealStage);
+  animTick += 0.05;
+  ctx.setTransform(canvas.width / 620, 0, 0, canvas.height / 290, 0, 0);
+  const w = 620;   // world coordinates stay 620x290 regardless of backing store size
+  const h = 290;
+  const b = getBurger();
+  const m = getMoodObj();
+
+  let kcal = b.kcal;
+  MENU_DB.sides.forEach(s => { if (selectedSides.has(s.id)) kcal += s.kcal; });
+  MENU_DB.drinks.forEach(d => { if (selectedDrinks.has(d.id)) kcal += d.kcal; });
+
+  ctx.fillStyle = "#181715";
+  ctx.fillRect(0, 0, w, h);
+
+  // Subtle dot grid
+  ctx.fillStyle = "rgba(250, 248, 244, 0.06)";
+  for (let gx = 18; gx < w; gx += 24) {
+    for (let gy = 18; gy < h; gy += 24) {
+      ctx.fillRect(gx, gy, 1.5, 1.5);
+    }
+  }
+
+  const pulse = isPlaying ? Math.abs(Math.sin(animTick * 2.2)) : 0.12;
+
+  // Top HUD
+  ctx.font = "600 11px 'SF Mono', monospace";
+  ctx.fillStyle = "#F0B429";
+  const PHASE_LABELS = {
+    intro: "INTRO // 🎵 BA-DA-BA-BA-BA 拆箱前奏...",
+    verse: "VERSE // 🍔 主歌 · 汉堡逐层卡点组装",
+    pre: "PRE-CHORUS // 🍟 预副歌 · 情绪爬升",
+    chorus: "CHORUS // ✨ 副歌 · 顶层王冠落定",
+    outro: "OUTRO // 🌙 尾奏 · 麦门永存余韵"
+  };
+  const phaseLabel = !isPlaying
+    ? "READY // 选好这顿饭 → 点播放"
+    : PHASE_LABELS[songSectionAt(songStep).id] || PHASE_LABELS.outro;
+  ctx.fillText(phaseLabel, 16, 22);
+
+  ctx.textAlign = "right";
+  ctx.fillStyle = "#EAE3D2";
+  ctx.fillText(b.songTitle, w - 16, 22);
+  ctx.fillStyle = "#F0B429";
+  ctx.fillText(`${m.label} ${moodStars}★ · ${m.bpm} BPM · ${kcal} kcal`, w - 16, 38);
+  ctx.textAlign = "left";
+
+  if (isPlaying && songStep < songSection("intro").end) {
+    // Intro scene: red Happy Meal box with golden arches handle
+    const boxX = w / 2 - 70;
+    const boxY = h / 2 - 62 - Math.sin(animTick * 4) * 10;
+
+    ctx.strokeStyle = "#F0B429";
+    ctx.lineWidth = 5;
+    ctx.beginPath();
+    ctx.arc(w / 2 - 22, boxY, 22, Math.PI, 0);
+    ctx.arc(w / 2 + 22, boxY, 22, Math.PI, 0);
+    ctx.stroke();
+
+    drawRoundedRect(boxX, boxY, 140, 110, 12, "#C83328", "#FAF8F4");
+    ctx.fillStyle = "#F0B429";
+    ctx.font = "900 26px 'SF Mono', monospace";
+    ctx.textAlign = "center";
+    ctx.fillText("ba-da-ba", w / 2, boxY + 52);
+    ctx.font = "700 13px 'PingFang SC', sans-serif";
+    ctx.fillStyle = "#FAF8F4";
+    ctx.fillText("正在拆开你的开心乐园餐玩具...", w / 2, boxY + 82);
+    ctx.textAlign = "left";
+  } else {
+    // Main scene: golden-arch harmonic field + layer-by-layer burger assembly
+    const centerX = w / 2;
+    const baseY = 218;
+    const sec = isPlaying ? songSectionAt(songStep) : null;
+    const isChorus = sec && sec.id.startsWith("chorus");
+    const isOutroSec = sec && sec.id === "outro";
+
+    // Chorus warm golden floodlight (behind everything)
+    if (isChorus) {
+      const grd = ctx.createRadialGradient(centerX, baseY - 60, 10, centerX, baseY - 60, 130);
+      grd.addColorStop(0, "rgba(240,180,41,0.18)");
+      grd.addColorStop(1, "rgba(240,180,41,0)");
+      ctx.fillStyle = grd;
+      ctx.fillRect(0, 0, w, h);
+    }
+
+    // Outro: lights dim, a quiet crescent moon rises
+    if (isOutroSec) {
+      ctx.fillStyle = "#F0B429";
+      ctx.beginPath();
+      ctx.arc(w - 54, 54, 14, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "#181715";
+      ctx.beginPath();
+      ctx.arc(w - 49, 50, 12, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.fillStyle = "rgba(250,248,244,0.5)";
+      ctx.fillRect(40, 60, 2, 2); ctx.fillRect(70, 44, 2, 2); ctx.fillRect(104, 70, 2, 2);
+    }
+
+    // Golden arches harmonic rings behind (breathing with playback)
+    ctx.strokeStyle = isChorus ? "rgba(240, 180, 41, 0.34)" : "rgba(240, 180, 41, 0.22)";
+    ctx.lineWidth = 2;
+    for (let r = 1; r <= 3; r++) {
+      ctx.beginPath();
+      ctx.arc(centerX, baseY - 55, 60 + r * 24 + pulse * 12, Math.PI * 1.05, Math.PI * 1.95);
+      ctx.stroke();
+    }
+
+    // Beat-synced expanding rings — the music you hear, drawn
+    if (isPlaying && songStep % 2 === 0 && lastRingStep !== songStep) {
+      lastRingStep = songStep;
+      beatRings.push({ born: animTick, strong: isChorus });
+    }
+    beatRings = beatRings.filter(r => animTick - r.born < 1.1);
+    beatRings.forEach(r => {
+      const age = (animTick - r.born) / 1.1;
+      ctx.strokeStyle = `rgba(240,180,41,${(r.strong ? 0.5 : 0.28) * (1 - age)})`;
+      ctx.lineWidth = r.strong ? 2.5 : 1.5;
+      ctx.beginPath();
+      ctx.arc(centerX, baseY - 55, 40 + age * (r.strong ? 135 : 90), Math.PI * 1.05, Math.PI * 1.95);
+      ctx.stroke();
+    });
+
+    // Left companions: every selected side renders its own hand-drawn sprite
+    const preSec = songSection("pre");
+    const preLift = isPlaying && songStep >= preSec.start
+      ? (songStep < preSec.end ? Math.min(1, (songStep - preSec.start) / 16) : 1)
+      : 0;
+    const sideSlots = [-150, -204, -246];
+    const slotScales = [1, 0.85, 0.72];
+    let si = 0;
+    MENU_DB.sides.forEach(item => {
+      if (!selectedSides.has(item.id) || si >= 3) return;
+      const bob = (isPlaying
+        ? Math.sin(animTick * 2.5 + si * 1.3) * (isChorus ? 4.5 : 3)
+        : Math.sin(animTick * 1.1 + si) * 1.5) - preLift * 14;
+      drawSideSprite(item, centerX + sideSlots[si], baseY + 4, bob, slotScales[si]);
+      si++;
+    });
+
+    // Right companions: every selected drink renders its own silhouette
+    const drinkSlots = [106, 156, 196];
+    let di = 0;
+    MENU_DB.drinks.forEach(item => {
+      if (!selectedDrinks.has(item.id) || di >= 3) return;
+      const bob = isPlaying
+        ? Math.sin(animTick * 2.3 + di * 1.7) * (isChorus ? 4 : 2.5)
+        : Math.sin(animTick + di) * 1.4;
+      drawDrinkSprite(item, centerX + drinkSlots[di], baseY + 4, bob, slotScales[di]);
+      di++;
+    });
+
+    // Center hero: beat-locked layer-by-layer assembly (卡点)
+    const layers = b.layers;
+    const landSteps = layerLandSteps(b);
+    const stepMs = songScore ? songScore.stepSec * 1000 : 385;
+    const nowReal = performance.now();
+    let shownLayers = layers.length;
+    if (isPlaying) {
+      // a layer enters its drop window one step BEFORE its landing beat
+      shownLayers = landSteps.filter(s => songStep >= s - 1).length;
+      for (let bi = 0; bi < shownLayers; bi++) {
+        if (dropStartReal[bi] === undefined) dropStartReal[bi] = nowReal;
+      }
+    }
+
+    if (explodeLayers) {
+      // Blueprint guide axis through the stack
+      ctx.setLineDash([4, 4]);
+      ctx.strokeStyle = "rgba(240,180,41,0.42)";
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(centerX, 34);
+      ctx.lineTo(centerX, baseY + 12);
+      ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    let currentY = baseY + 6;
+    const gap = (explodeLayers ? 13 : 3) + pulse * 4;
+
+    for (let i = layers.length - 1; i >= 0; i--) {
+      const layer = layers[i];
+      const bi = layers.length - 1 - i; // index from bottom = assembly order
+      const lh = layer.h;
+      currentY -= (lh + gap);
+      if (isPlaying && bi >= shownLayers) continue; // not assembled yet
+
+      const bounce = isPlaying
+        ? Math.sin(animTick * 2.5 + i * 0.7) * (isChorus ? 4.6 : 3.2)
+        : Math.sin(animTick * 1.2 + i * 0.5) * 1.6; // idle breathing
+
+      // Beat-locked drop: the fall spans exactly one step, impact lands ON the kick tick
+      let dropOff = 0, squash = 1;
+      if (isPlaying && dropStartReal[bi] !== undefined) {
+        const p = (nowReal - dropStartReal[bi]) / stepMs;
+        if (p < 1) {
+          dropOff = -170 * (1 - Math.pow(p, 1.9)); // accelerating fall, reaches 0 at the beat
+        } else {
+          if (p < 1.24) {
+            const q = Math.sin(Math.PI * (p - 1) / 0.24);
+            dropOff = -13 * q;
+            squash = 1 - 0.24 * q;
+          }
+          if (landedTicks[bi] === undefined) landedTicks[bi] = animTick;
+        }
+      }
+
+      const lx = centerX - 66;
+      const ly = currentY + bounce + dropOff;
+      const drawH = lh * squash;
+      const radius = layer.type === "bun-top" ? [26, 26, 6, 6] : layer.type === "bun-bot" ? [6, 6, 15, 15] : 6;
+
+      drawRoundedRect(lx, ly - (drawH - lh), 132, drawH, radius, layer.color, "#181715");
+
+      if (layer.type === "bun-top") {
+        ctx.fillStyle = "#FAF8F4";
+        [-34, -17, 0, 17, 34].forEach(ox => {
+          ctx.beginPath();
+          ctx.ellipse(centerX + ox, ly + 7, 3, 1.5, 0.2, 0, Math.PI * 2);
+          ctx.fill();
+        });
+      }
+
+      // Technical-diagram leader line + part label (anatomy style)
+      const labelAge = landedTicks[bi] !== undefined ? animTick - landedTicks[bi] : 99;
+      const idleCycle = Math.floor(animTick / 2.2) % layers.length;
+      const showLabel = explodeLayers ||
+        (isPlaying && labelAge < 2.8) ||
+        (!isPlaying && idleCycle === bi);
+      if (showLabel) {
+        ctx.strokeStyle = "rgba(240,180,41,0.55)";
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        ctx.moveTo(lx + 134, ly + lh / 2);
+        ctx.lineTo(lx + 148, ly + lh / 2);
+        ctx.lineTo(lx + 156, ly + lh / 2 - 7);
+        ctx.stroke();
+        ctx.font = "10px 'SF Mono', monospace";
+        ctx.fillStyle = "#F0B429";
+        ctx.fillText(`${String(bi + 1).padStart(2, "0")} · ${layer.label}`, lx + 160, ly + lh / 2 - 4);
+      }
+    }
+
+    // Blueprint dimension caption in explode mode
+    if (explodeLayers) {
+      ctx.font = "10px 'SF Mono', monospace";
+      ctx.fillStyle = "rgba(240,180,41,0.75)";
+      ctx.fillText(`ASSEMBLY x${layers.length} LAYERS`, centerX - 62, baseY + 22);
+    }
+  }
+
+  // Bottom synced lyric bar
+  drawRoundedRect(14, h - 56, w - 28, 44, 8, "rgba(250,248,244,0.07)", "rgba(240,180,41,0.32)");
+  ctx.font = "600 12px 'PingFang SC', sans-serif";
+  ctx.fillStyle = "#FAF8F4";
+  ctx.textAlign = "center";
+  const starsStr = "★".repeat(moodStars) + "☆".repeat(5 - moodStars);
+  let lines = [];
+  if (!isPlaying) {
+    lines = [`当前餐盘：${b.name} · ${selectedSides.size} 样小食 · ${selectedDrinks.size} 样饮品`];
+  } else {
+    const sid = songSectionAt(songStep).id;
+    if (sid === "intro") {
+      lines = ["♪ Ba-Da-Ba-Ba-Ba · i'm lovin' it ♪"];
+    } else if (sid === "verse") {
+      lines = [`♪ ${b.lyricVerse}`];
+    } else if (sid === "pre") {
+      lines = [`♪ ${curOrder.storeName} 的灯光下 · ${kcal} kcal 的安心配比`];
+    } else if (sid.startsWith("chorus")) {
+      lines = b.lyricChorus.split("\n").map(l => `♪ ${l}`);
+    } else {
+      lines = [`♪ ${m.label} (${starsStr}) · Ba-Da-Ba-Ba-Ba 麦门永存`];
+    }
+  }
+  lines.slice(0, 2).forEach((line, idx) => {
+    ctx.fillText(line, w / 2, h - 36 + idx * 17);
+  });
+  ctx.textAlign = "left";
+}
+
+/**
+ * MCP ORDER IMPORT — order-list 在线拉取 / 粘贴 JSON / 演示订单，全部只读
+ */
+const MCP_ENDPOINT = "https://mcp.mcd.cn";
+
+const BURGER_RULES = [
+  [/巨无霸/, "bigmac"], [/双层吉士|吉士汉堡|双重芝士/, "double_cheese"],
+  [/麦辣鸡腿|麦辣堡|香辣鸡腿/, "mcspicy"], [/板烧|嫩烤鸡腿/, "gcbb"],
+  [/松饼|猪柳蛋|麦满分/, "griddle"], [/龙焰/, "dragon_burger"],
+  [/汉堡|堡/, "double_cheese"]
+];
+const SIDE_RULES = [
+  [/薯条/, "fries"], [/麦乐鸡|乐鸡块/, "nuggets"], [/鸡翅/, "wings"],
+  [/香芋派|菠萝派|苹果派/, "taro_pie"], [/薯饼/, "hashbrown"], [/鸡薯盒|辣椒黄油/, "gd_box"]
+];
+const DRINK_RULES = [
+  [/无糖可乐|零度|0度|zero/i, "zero_coke"], [/可乐/, "coke"],
+  [/美式|拿铁|咖啡/, "americano"], [/蓝莓|爆珠/, "blueberry"],
+  [/麦旋风/, "mcflurry"], [/灰焰|圆筒|甜筒/, "ash_cone"],
+  [/雪碧|芬达|红茶|绿茶|柠檬|牛奶|奶茶|橙汁/, "coke"]
+];
+
+function classifyItems(rawItems) {
+  let burger = null;
+  const sides = new Set(), drinks = new Set(), extras = [];
+  (rawItems || []).forEach(it => {
+    const name = String((it && (it.name || it.productName)) || it || "").trim();
+    if (!name) return;
+    let matched = false;
+    if (!burger) { for (const [re, id] of BURGER_RULES) if (re.test(name)) { burger = id; matched = true; break; } }
+    if (!matched) { for (const [re, id] of SIDE_RULES) if (re.test(name)) { sides.add(id); matched = true; break; } }
+    if (!matched) { for (const [re, id] of DRINK_RULES) if (re.test(name)) { drinks.add(id); matched = true; break; } }
+    if (!matched) extras.push(name);
+  });
+  return { burger: burger || "double_cheese", sides: [...sides], drinks: [...drinks], extras };
+}
+
+function balanceJson(t, start) {
+  const open = t[start], close = open === "{" ? "}" : "]";
+  let depth = 0, inStr = false, esc = false;
+  for (let i = start; i < t.length; i++) {
+    const c = t[i];
+    if (inStr) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') inStr = false; continue; }
+    if (c === '"') inStr = true;
+    else if (c === open) depth++;
+    else if (c === close) { depth--; if (depth === 0) return t.slice(start, i + 1); }
+  }
+  return null;
+}
+
+function extractMcpJson(text) {
+  let t = String(text || "");
+  if (t.includes("## Original Response")) t = t.split("## Original Response")[1];
+  let tried = 0;
+  for (let i = 0; i < t.length && tried < 400; i++) {
+    if (t[i] !== "{" && t[i] !== "[") continue;
+    tried++;
+    const slice = balanceJson(t, i);
+    if (slice) { try { return JSON.parse(slice); } catch (e) {} }
+  }
+  return null;
+}
+
+function findOrders(obj) {
+  const out = [];
+  const seen = new Set();
+  const add = order => {
+    if (order && !seen.has(order)) { seen.add(order); out.push(order); }
+  };
+  (function walk(node) {
+    if (Array.isArray(node)) {
+      node.forEach(walk);
+    } else if (node && typeof node === "object") {
+      if (node.order && typeof node.order === "object" &&
+          (node.order.orderProductList || node.order.items)) add(node.order);
+      if ((node.orderProductList || node.items) &&
+          (node.orderId || node.orderNo || node.id || node.orderSn)) add(node);
+      Object.values(node).forEach(walk);
+    }
+  })(obj);
+  return out;
+}
+
+function normTime(v) {
+  if (!v) return "";
+  if (typeof v === "number") {
+    const d = new Date(v > 1e12 ? v : v * 1000);
+    return isNaN(d) ? String(v) : d.toLocaleString("zh-CN", { hour12: false });
+  }
+  return String(v);
+}
+
+function normalizeOrder(d) {
+  const items = [];
+  (d.orderProductList || []).forEach(p => {
+    const combo = p.comboItemList || [];
+    if (combo.length) combo.forEach(c => items.push({ name: c.name || c.productName, quantity: c.quantity }));
+    else if (p.productName || p.name) items.push({ name: p.productName || p.name, quantity: p.quantity });
+  });
+  if (!items.length && Array.isArray(d.items)) {
+    d.items.forEach(item => {
+      if (typeof item === "string") items.push({ name: item });
+      else if (item && (item.name || item.productName)) {
+        items.push({ name: item.name || item.productName, quantity: item.quantity || item.qty });
+      }
+    });
+  }
+  let store = d.shopName || d.storeName || d.store || d.restaurantName || "";
+  if (store && !String(store).includes("麦当劳")) store = "麦当劳" + String(store);
+  return {
+    orderNo: String(d.orderId || d.orderNo || d.id || d.orderSn || "MCD-IMPORT"),
+    storeCode: String(d.storeCode || d.shopCode || "—"),
+    storeName: store || "麦当劳门店",
+    time: normTime(d.createTime || d.createdAt || d.payTime || d.time || d.orderDate),
+    items
+  };
+}
+
+function applyImportedOrder(ord) {
+  const map = classifyItems(ord.items);
+  curOrder = {
+    orderNo: ord.orderNo, storeCode: ord.storeCode, storeName: ord.storeName, time: ord.time || "刚刚",
+    burger: map.burger, sides: map.sides, drinks: map.drinks, extras: map.extras
+  };
+  selectedBurger = map.burger;
+  selectedSides = new Set(map.sides);
+  selectedDrinks = new Set(map.drinks);
+  if (map.sides.length || map.drinks.length || map.extras.length) showMoreFood(true);
+  renderAllControlsAndReceipts();
+  document.getElementById("importPanel").classList.add("hidden");
+  document.getElementById("pastePanel").classList.add("hidden");
+  document.getElementById("stageTitle").textContent = `✅ 已导入订单 ${ord.orderNo} · ${ord.storeName}`;
+  playBaDaBaBaBa();
+}
+
+function renderImportList(orders, label) {
+  const box = document.getElementById("importOrderList");
+  box.innerHTML = "";
+  const head = document.createElement("div");
+  head.className = "imp-list-head";
+  head.textContent = label;
+  box.appendChild(head);
+  if (!orders.length) {
+    const empty = document.createElement("div");
+    empty.className = "imp-hint";
+    empty.textContent = "没有可导入的订单。";
+    box.appendChild(empty);
+    return;
+  }
+  orders.slice(0, 10).forEach(ord => {
+    const el = document.createElement("button");
+    el.className = "imp-order";
+    const names = ord.items.map(i => i.name).filter(Boolean).join("、") || "（无餐品明细）";
+    const time = document.createElement("span");
+    time.className = "io-time";
+    time.textContent = ord.time || "";
+    const store = document.createElement("span");
+    store.className = "io-store";
+    store.textContent = ord.storeName;
+    const itemText = document.createElement("span");
+    itemText.className = "io-items";
+    itemText.textContent = names.slice(0, 42);
+    el.append(time, store, itemText);
+    el.addEventListener("click", () => applyImportedOrder(ord));
+    box.appendChild(el);
+  });
+}
+
+function demoOrders() {
+  return Object.values(ORDER_PRESETS).map(p => ({
+    orderNo: p.orderNo, storeCode: p.storeCode, storeName: p.storeName, time: p.time,
+    items: [
+      { name: (MENU_DB.burgers.find(b => b.id === p.burger) || {}).name },
+      ...p.sides.map(id => ({ name: (MENU_DB.sides.find(s => s.id === id) || {}).name })),
+      ...p.drinks.map(id => ({ name: (MENU_DB.drinks.find(d => d.id === id) || {}).name }))
+    ]
+  }));
+}
+
+async function fetchMcpOrders() {
+  const token = document.getElementById("mcpTokenInput").value.trim();
+  const hint = document.getElementById("importHint");
+  if (!token) {
+    renderImportList(demoOrders(), "演示订单（未填 Token）——点一条直接填满餐盘");
+    return;
+  }
+  hint.textContent = "⏳ 正在连接 mcp.mcd.cn（只读 order-list）…";
+  let sessionId = "";
+  const post = async payload => {
+    const headers = {
+      "Content-Type": "application/json",
+      "Authorization": "Bearer " + token,
+      "Accept": "application/json, text/event-stream",
+      "MCP-Protocol-Version": "2025-06-18"
+    };
+    if (sessionId) headers["Mcp-Session-Id"] = sessionId;
+    const res = await fetch(MCP_ENDPOINT, { method: "POST", headers, body: JSON.stringify(payload) });
+    const raw = await res.text();
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    sessionId = res.headers.get("Mcp-Session-Id") || res.headers.get("mcp-session-id") || sessionId;
+    if (!raw.trim()) return null;
+    if (raw.includes("data:")) {
+      const datas = raw.split("\n").filter(line => line.startsWith("data:")).map(line => line.slice(5).trim());
+      for (let i = datas.length - 1; i >= 0; i--) {
+        try { return JSON.parse(datas[i]); } catch (e) {}
+      }
+    }
+    try { return JSON.parse(raw); } catch (e) { return { raw }; }
+  };
+  try {
+    await post({
+      jsonrpc: "2.0", id: 1, method: "initialize",
+      params: { protocolVersion: "2025-06-18", capabilities: {}, clientInfo: { name: "happymeal-exe-web", version: "1.0.0" } }
+    });
+    await post({ jsonrpc: "2.0", method: "notifications/initialized", params: {} });
+    const response = await post({ jsonrpc: "2.0", id: 2, method: "tools/call", params: { name: "order-list", arguments: {} } });
+    if (response && response.error) throw new Error("MCP 返回错误");
+    const content = response && response.result && response.result.content;
+    const payloadText = content && content[0] ? content[0].text : (response && response.raw) || JSON.stringify(response || {});
+    const obj = extractMcpJson(payloadText);
+    const orders = obj ? findOrders(obj).map(normalizeOrder) : [];
+    if (orders.length) {
+      renderImportList(orders, `✅ MCP order-list · ${orders.length} 条真实订单`);
+      hint.textContent = "只读调用 order-list，未触碰任何下单/出餐接口。";
+    } else {
+      renderImportList(demoOrders(), "演示订单");
+      hint.textContent = "⚠️ 返回里没解析到订单（Token 名下可能暂无订单），先列出演示订单。";
+    }
+  } catch (err) {
+    renderImportList(demoOrders(), "演示订单");
+    hint.textContent = "❌ 浏览器直连失败（可能是 CORS/网络）。请按 README 的真实订单步骤，用脚本导出后粘贴。" + (err && err.message ? "（" + err.message + "）" : "");
+  }
+}
+
+function parsePastedJson() {
+  const txt = document.getElementById("pasteJsonArea").value.trim();
+  if (!txt) return;
+  const obj = extractMcpJson(txt);
+  const orders = obj ? findOrders(obj).map(normalizeOrder) : [];
+  if (!orders.length) {
+    alert("没解析出订单——确认粘贴的是 order-list / query-order / presets_bundle 的输出。");
+    return;
+  }
+  document.getElementById("importPanel").classList.remove("hidden");
+  renderImportList(orders, `✅ 粘贴解析成功 · ${orders.length} 条订单`);
+}
+
+function showMoreFood(force) {
+  const box = document.getElementById("moreFood");
+  const btn = document.getElementById("moreFoodToggle");
+  const show = force === true ? true : box.classList.contains("hidden");
+  box.classList.toggle("hidden", !show);
+  btn.textContent = show ? "− 收起小食与饮品" : "＋ 加小食 / 饮品（琶音与声场轨）";
+}
+
+// Event Listeners
+document.getElementById("importOrderBtn").addEventListener("click", () => {
+  const p = document.getElementById("importPanel");
+  document.getElementById("pastePanel").classList.add("hidden");
+  const opening = p.classList.contains("hidden");
+  p.classList.toggle("hidden");
+  if (opening && !document.getElementById("importOrderList").children.length) {
+    renderImportList(demoOrders(), "演示订单（未连 MCP 时使用）——点一条直接填满餐盘");
+  }
+});
+document.getElementById("fetchOrdersBtn").addEventListener("click", fetchMcpOrders);
+document.getElementById("pasteJsonBtn").addEventListener("click", () => {
+  document.getElementById("importPanel").classList.add("hidden");
+  document.getElementById("pastePanel").classList.toggle("hidden");
+});
+document.getElementById("parseJsonBtn").addEventListener("click", parsePastedJson);
+document.getElementById("moreFoodToggle").addEventListener("click", () => showMoreFood());
+
+document.querySelectorAll(".mood-card").forEach(mc => {
+  mc.addEventListener("click", () => {
+    currentMood = mc.dataset.mood;
+    renderAllControlsAndReceipts();
+    if (isPlaying) startSongPlayback();
+    else playBaDaBaBaBa();
+  });
+});
+
+document.querySelectorAll(".star-btn").forEach(st => {
+  st.addEventListener("click", () => {
+    moodStars = Number(st.dataset.val);
+    renderAllControlsAndReceipts();
+    if (isPlaying) startSongPlayback(true); // re-arrange instantly, keep position
+    else playBaDaBaBaBa();
+  });
+});
+
+document.getElementById("playBtn").addEventListener("click", toggleSongPlayback);
+document.getElementById("soloJingleBtn").addEventListener("click", playBaDaBaBaBa);
+document.getElementById("explodeBtn").addEventListener("click", () => {
+  explodeLayers = !explodeLayers;
+  playAcousticNote(getBurger().rootHz * 2.5, 0.22, 0.16, "celesta");
+});
+
+// Tab Switching: Digital Edition vs Physical 80mm Thermal Edition
+const tabDig = document.getElementById("tabDigitalBtn");
+const tabThm = document.getElementById("tabThermalBtn");
+const digCard = document.getElementById("digitalTicket");
+const thmWrap = document.getElementById("thermalTicketWrap");
+
+tabDig.addEventListener("click", () => {
+  tabDig.classList.add("active");
+  tabThm.classList.remove("active");
+  digCard.classList.remove("hidden");
+  thmWrap.classList.remove("active");
+});
+
+tabThm.addEventListener("click", () => {
+  tabThm.classList.add("active");
+  tabDig.classList.remove("active");
+  digCard.classList.add("hidden");
+  thmWrap.classList.add("active");
+});
+
+// QR Code & Download / Print Actions
+document.getElementById("downloadFullWavBtn").addEventListener("click", downloadCompleteSongWav);
+document.getElementById("landingDlBtn").addEventListener("click", downloadCompleteSongWav);
+document.getElementById("digitalQrBox").addEventListener("click", downloadCompleteSongWav);
+document.getElementById("thermalQrBox").addEventListener("click", downloadCompleteSongWav);
+document.getElementById("printPhysicalBtn").addEventListener("click", () => {
+  tabThm.click();
+  setTimeout(() => window.print(), 150);
+});
+document.getElementById("exportEscPosBtn").addEventListener("click", exportEscPosBinary);
+document.getElementById("exportYueBtn").addEventListener("click", exportYuePackage);
+
+document.getElementById("reelToggleBtn").addEventListener("click", e => {
+  const ws = document.getElementById("workspace");
+  ws.classList.toggle("reel-mode");
+  e.target.textContent = ws.classList.contains("reel-mode") ? "🔙 退出竖屏" : "📱 竖屏";
+});
+
+// Video Recorder
+let mediaRecorder = null;
+let recChunks = [];
+document.getElementById("recordVideoBtn").addEventListener("click", e => {
+  initAudioEngine();
+  const btn = e.target;
+  if (mediaRecorder && mediaRecorder.state === "recording") {
+    mediaRecorder.stop();
+    btn.textContent = "🔴 录视频";
+    return;
+  }
+  startSongPlayback();
+  try {
+    const cStream = canvas.captureStream(30);
+    const aDest = audioCtx.createMediaStreamDestination();
+    masterGain.connect(aDest);
+    const combined = new MediaStream([...cStream.getVideoTracks(), ...aDest.stream.getAudioTracks()]);
+    recChunks = [];
+    mediaRecorder = new MediaRecorder(combined, { mimeType: "video/webm" });
+    mediaRecorder.ondataavailable = ev => { if (ev.data.size > 0) recChunks.push(ev.data); };
+    mediaRecorder.onstop = () => {
+      const blob = new Blob(recChunks, { type: "video/webm" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `HappyMeal_${curOrder.orderNo}.webm`;
+      a.click();
+    };
+    mediaRecorder.start();
+    btn.textContent = "⏹ 停止并保存视频";
+  } catch (err) {
+    mediaRecorder = null;
+    alert("当前浏览器不支持 webm 内录（iOS Safari 常见）。请用 Chrome / Edge 录制，或直接用手机录屏分享～");
+    btn.textContent = "🔴 录视频";
+  }
+});
+
+// Initialize
+(function applySharedSongFromHash() {
+  const m = location.hash.match(/[#&]s=([^&]+)/);
+  if (!m) return;
+  const parts = m[1].split("~");
+  if (parts.length < 4) return;
+  const [orderNo, burgerId, mood, stars, storeEnc, storeCode] = parts;
+  const burger = MENU_DB.burgers.find(bb => bb.id === burgerId);
+  if (!burger) return;
+  let storeName = "麦当劳门店";
+  try { if (storeEnc) storeName = decodeURIComponent(storeEnc); } catch (e) {}
+  curOrder = {
+    orderNo: orderNo || "MCD-SHARED",
+    storeCode: storeCode || "—",
+    storeName, time: "扫码直达",
+    burger: burgerId, sides: [], drinks: [], extras: []
+  };
+  selectedBurger = burgerId;
+  selectedSides = new Set();
+  selectedDrinks = new Set();
+  currentMood = MOOD_PROFILES[mood] ? mood : "down";
+  moodStars = Math.min(5, Math.max(1, parseInt(stars, 10) || 4));
+  document.getElementById("stageTitle").textContent = "🎧 扫码而来 · 这首歌属于你";
+  document.getElementById("landingBar").classList.remove("hidden");
+  document.getElementById("landingTip").textContent = `${burger.songTitle} 已复原 · 先点 ▶ 试听，喜欢就带走`;
+})();
+
+renderAllControlsAndReceipts();
+drawMealStage();
+</script>
+</body>
+</html>

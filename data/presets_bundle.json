@@ -1,0 +1,788 @@
+{
+  "late_night_coder": {
+    "order": {
+      "orderId": "MCD202610232342",
+      "createTime": "2026-10-23 23:42:18",
+      "storeCode": "1900248",
+      "storeName": "麦当劳深圳高新南一道餐厅",
+      "city": "SHENZHEN",
+      "orderType": "到店取餐",
+      "realTotalAmount": 22.9,
+      "savings": 19.1,
+      "visitCount": 42,
+      "items": [
+        {
+          "name": "双层吉士汉堡",
+          "qty": 1,
+          "price": 13.9,
+          "kcal": 440,
+          "protein": 25.0,
+          "fat": 23.0,
+          "carbs": 32.0,
+          "category": "burger"
+        },
+        {
+          "name": "麦乐鸡(5块)",
+          "qty": 1,
+          "price": 0.0,
+          "kcal": 230,
+          "protein": 13.0,
+          "fat": 14.0,
+          "carbs": 13.0,
+          "category": "nuggets"
+        },
+        {
+          "name": "薯条(中)",
+          "qty": 1,
+          "price": 9.0,
+          "kcal": 330,
+          "protein": 4.0,
+          "fat": 16.0,
+          "carbs": 42.0,
+          "category": "fries"
+        },
+        {
+          "name": "无糖可口可乐中杯",
+          "qty": 1,
+          "price": 0.0,
+          "kcal": 0,
+          "protein": 0.0,
+          "fat": 0.0,
+          "carbs": 0.0,
+          "category": "drink"
+        }
+      ]
+    },
+    "nutrition": {
+      "total_kcal": 1000,
+      "total_protein": 42.0,
+      "total_fat": 53.0,
+      "total_carbs": 87.0,
+      "focus_minutes": 22
+    },
+    "store_stamp": {
+      "serial_no": "HM-0248-1023-A60B",
+      "store_code": "1900248",
+      "store_name": "麦当劳深圳高新南一道餐厅",
+      "order_type": "到店取餐",
+      "shift_code": "NIGHT-24H",
+      "ambience": "24h 深夜留灯 · Lo-Fi 黑胶与窗外微雨",
+      "musical_key": "D Major CityPop",
+      "abc_key": "D",
+      "root_hz": 146.83,
+      "chord_progression": [
+        "Dmaj7",
+        "C#m7",
+        "Bm7",
+        "Amaj7"
+      ],
+      "base_bpm": 88,
+      "arpeggio_pattern": [
+        7,
+        3,
+        1,
+        1,
+        2,
+        7,
+        2,
+        0
+      ]
+    },
+    "easter_eggs": [
+      {
+        "id": "NIGHT_SANCTUARY",
+        "badge": "🌙 深夜留灯 · 24h 庇护所模式",
+        "title": "深夜 24 小时门店陪伴彩蛋",
+        "desc": "22:00 后进店/点单触发。自动注入温暖黑胶底噪与慢速 Lo-Fi 滤波：那盏亮着的 M 字灯陪你改完最后一个 Bug。",
+        "synth_mod": {
+          "theme": "midnight_neon",
+          "extra_riff": "lofi_vinyl",
+          "bpm_boost": -8
+        }
+      },
+      {
+        "id": "CODER_1024",
+        "badge": "👾 1024 程序员节 · 8-Bit 芯片彩蛋",
+        "title": "1024 程序员节 × 零卡续命彩蛋",
+        "desc": "检测到程序员高频特征（0 kcal 无糖可乐 + 随心配）！解锁红白机 Chiptune 方波主音与二进制脉冲视觉。",
+        "synth_mod": {
+          "theme": "cyber_1024",
+          "extra_riff": "chiptune_1024",
+          "bpm_boost": 6
+        }
+      }
+    ],
+    "campaigns_snapshot": [
+      {
+        "date": "2026-10-23",
+        "title": "🩶灰白撞色，灰焰圆筒酷爽登场",
+        "tag": "今日上新",
+        "keyword": "灰焰圆筒"
+      },
+      {
+        "date": "2026-10-23",
+        "title": "过家家派对上线，快来一起解锁梦想职业",
+        "tag": "童趣派对",
+        "keyword": "过家家派对"
+      },
+      {
+        "date": "2026-10-22",
+        "title": "第三周周边✨「我就喜欢」限定主题丝巾",
+        "tag": "周边限定",
+        "keyword": "限定丝巾"
+      },
+      {
+        "date": "2026-10-18",
+        "title": "学生专属！49元150天麦金学期卡💳",
+        "tag": "特权卡",
+        "keyword": "麦金学期卡"
+      },
+      {
+        "date": "2026-10-15",
+        "title": "麦当劳 X PEACEMINUSONE 联名徽章 & 小雏菊限定",
+        "tag": "潮流联名",
+        "keyword": "PEACEMINUSONE"
+      },
+      {
+        "date": "2026-10-14",
+        "title": "🍫麦咖啡13.9r浓浓黑巧来啦！",
+        "tag": "麦咖啡上新",
+        "keyword": "浓浓黑巧"
+      }
+    ],
+    "yue_symbolic_plan": {
+      "generator": "HappyMeal.exe x YuE2 Symbolic Bridge",
+      "reference_repo": "https://github.com/multimodal-art-projection/YuE",
+      "cot": "full",
+      "style": "lo-fi hip hop, warm vinyl crackle, electric piano, late night chill, gentle groove",
+      "abc": "X:1\nT:HappyMeal.exe - MCD202610232342\nC:McDonald's MCP x YuE Symbolic Planner (HM-0248-1023-A60B)\nM:4/4\nL:1/8\nQ:1/4=88\nK:D\n\"Dmaj7\" c2 d2 f2 g2 |\n\"C#m7\" a2 g2 f2 d2 |\n\"Bm7\" c2 d2 f2 a2 |\n\"Amaj7\" g4 z4 |\n\"Dmaj7\" c1 d1 f1 a2 g3 |",
+      "lyrics": "[verse]\n2026-10-23 23:42 的 麦当劳深圳高新南一道餐厅\n出厂编号 HM-0248-1023-A60B 刚刚点亮\n餐盘上是 双层吉士汉堡×1、麦乐鸡(5块)×1、薯条(中)×1、无糖可口可乐中杯×1\n一共 1000 大卡 把疲惫都融化\n\n[chorus]\n小时候等考满分 才有的开心乐园餐\n长大后一顿随心配 也能掉出声光玩具\nBa da ba ba ba 麦门永存\n这十五分钟 世界安静 只听我的合成器\n",
+      "metadata": {
+        "serial_no": "HM-0248-1023-A60B",
+        "total_kcal": 1000,
+        "easter_eggs": [
+          "🌙 深夜留灯 · 24h 庇护所模式",
+          "👾 1024 程序员节 · 8-Bit 芯片彩蛋"
+        ]
+      }
+    }
+  },
+  "gd_daisy_collab": {
+    "order": {
+      "orderId": "MCD202610231915",
+      "createTime": "2026-10-23 19:15:04",
+      "storeCode": "2100882",
+      "storeName": "麦当劳上海静安寺旗舰餐厅",
+      "city": "SHANGHAI",
+      "orderType": "到店取餐",
+      "realTotalAmount": 44.9,
+      "savings": 18.0,
+      "visitCount": 19,
+      "items": [
+        {
+          "name": "龙焰鸡腿堡",
+          "qty": 1,
+          "price": 21.0,
+          "kcal": 540,
+          "protein": 24.0,
+          "fat": 28.0,
+          "carbs": 47.0,
+          "category": "burger"
+        },
+        {
+          "name": "韩式辣椒黄油风味鸡薯盒",
+          "qty": 1,
+          "price": 15.9,
+          "kcal": 610,
+          "protein": 22.0,
+          "fat": 34.0,
+          "carbs": 54.0,
+          "category": "nuggets"
+        },
+        {
+          "name": "蓝莓爆爆珠麦旋风",
+          "qty": 1,
+          "price": 8.0,
+          "kcal": 320,
+          "protein": 5.5,
+          "fat": 9.5,
+          "carbs": 53.0,
+          "category": "drink"
+        }
+      ]
+    },
+    "nutrition": {
+      "total_kcal": 1470,
+      "total_protein": 51.5,
+      "total_fat": 71.5,
+      "total_carbs": 154.0,
+      "focus_minutes": 32
+    },
+    "store_stamp": {
+      "serial_no": "HM-0882-1023-C9AC",
+      "store_code": "2100882",
+      "store_name": "麦当劳上海静安寺旗舰餐厅",
+      "order_type": "到店取餐",
+      "shift_code": "GOLDEN-HOUR",
+      "ambience": "傍晚霓虹招牌 · Funk 律动合成器",
+      "musical_key": "F Major Pentatonic",
+      "abc_key": "F",
+      "root_hz": 174.61,
+      "chord_progression": [
+        "Fmaj7",
+        "Em7",
+        "Dm7",
+        "Cmaj7"
+      ],
+      "base_bpm": 110,
+      "arpeggio_pattern": [
+        6,
+        7,
+        7,
+        4,
+        1,
+        1,
+        3,
+        5
+      ]
+    },
+    "easter_eggs": [
+      {
+        "id": "GD_DAISY",
+        "badge": "🖤 SSR 限定 · 小雏菊韩风 808",
+        "title": "麦当劳 × PEACEMINUSONE 潮流联名彩蛋",
+        "desc": "检测到当月活动款「龙焰鸡腿堡 / 韩式风味酱」，玩具外壳切换黑黄小雏菊涂装，解锁 K-HipHop 808 滑音低音轨！",
+        "synth_mod": {
+          "theme": "daisy_black_gold",
+          "extra_riff": "k_hiphop_808",
+          "bpm_boost": 8
+        }
+      },
+      {
+        "id": "SWEET_COOL_DROP",
+        "badge": "🩶 当日上新 · 甜酷冰晶合成器",
+        "title": "10月新品「灰焰圆筒 / 蓝莓爆爆珠」彩蛋",
+        "desc": "命中 MCP campaign-calendar 10月甜品上新！解锁 Crystal Bell 玻璃冰晶琶音器与气泡粒子特效。",
+        "synth_mod": {
+          "theme": "ash_silver",
+          "extra_riff": "crystal_bell",
+          "bpm_boost": 4
+        }
+      },
+      {
+        "id": "CALORIE_OVERDRIVE",
+        "badge": "🔥 千卡核弹 · 安格斯厚牛失真",
+        "title": "高能多巴胺冲击（本单 1470 kcal）",
+        "desc": "触发 list-nutrition-foods 热量榜首「安格斯厚牛 / 千卡大餐」！开启 Analog Warm Overdrive 饱和重低音。",
+        "synth_mod": {
+          "theme": "lava_red",
+          "extra_riff": "acid_overdrive",
+          "bpm_boost": 12
+        }
+      }
+    ],
+    "campaigns_snapshot": [
+      {
+        "date": "2026-10-23",
+        "title": "🩶灰白撞色，灰焰圆筒酷爽登场",
+        "tag": "今日上新",
+        "keyword": "灰焰圆筒"
+      },
+      {
+        "date": "2026-10-23",
+        "title": "过家家派对上线，快来一起解锁梦想职业",
+        "tag": "童趣派对",
+        "keyword": "过家家派对"
+      },
+      {
+        "date": "2026-10-22",
+        "title": "第三周周边✨「我就喜欢」限定主题丝巾",
+        "tag": "周边限定",
+        "keyword": "限定丝巾"
+      },
+      {
+        "date": "2026-10-18",
+        "title": "学生专属！49元150天麦金学期卡💳",
+        "tag": "特权卡",
+        "keyword": "麦金学期卡"
+      },
+      {
+        "date": "2026-10-15",
+        "title": "麦当劳 X PEACEMINUSONE 联名徽章 & 小雏菊限定",
+        "tag": "潮流联名",
+        "keyword": "PEACEMINUSONE"
+      },
+      {
+        "date": "2026-10-14",
+        "title": "🍫麦咖啡13.9r浓浓黑巧来啦！",
+        "tag": "麦咖啡上新",
+        "keyword": "浓浓黑巧"
+      }
+    ],
+    "yue_symbolic_plan": {
+      "generator": "HappyMeal.exe x YuE2 Symbolic Bridge",
+      "reference_repo": "https://github.com/multimodal-art-projection/YuE",
+      "cot": "full",
+      "style": "k-hiphop, trendy 808 bass, crisp trap hi-hats, brass synth, energetic",
+      "abc": "X:1\nT:HappyMeal.exe - MCD202610231915\nC:McDonald's MCP x YuE Symbolic Planner (HM-0882-1023-C9AC)\nM:4/4\nL:1/8\nQ:1/4=110\nK:F\n\"Fmaj7\" c2 d2 f2 g2 |\n\"Em7\" a2 g2 f2 d2 |\n\"Dm7\" c2 d2 f2 a2 |\n\"Cmaj7\" g4 z4 |\n\"Fmaj7\" c1 d1 f1 a2 g3 |",
+      "lyrics": "[verse]\n2026-10-23 19:15 的 麦当劳上海静安寺旗舰餐厅\n出厂编号 HM-0882-1023-C9AC 刚刚点亮\n餐盘上是 龙焰鸡腿堡×1、韩式辣椒黄油风味鸡薯盒×1、蓝莓爆爆珠麦旋风×1\n一共 1470 大卡 把疲惫都融化\n\n[chorus]\n小时候等考满分 才有的开心乐园餐\n长大后一顿随心配 也能掉出声光玩具\nBa da ba ba ba 麦门永存\n这十五分钟 世界安静 只听我的合成器\n",
+      "metadata": {
+        "serial_no": "HM-0882-1023-C9AC",
+        "total_kcal": 1470,
+        "easter_eggs": [
+          "🖤 SSR 限定 · 小雏菊韩风 808",
+          "🩶 当日上新 · 甜酷冰晶合成器",
+          "🔥 千卡核弹 · 安格斯厚牛失真"
+        ]
+      }
+    }
+  },
+  "ash_cone_new": {
+    "order": {
+      "orderId": "MCD202610231530",
+      "createTime": "2026-10-23 15:30:00",
+      "storeCode": "1100512",
+      "storeName": "麦当劳北京望京SOHO餐厅",
+      "city": "BEIJING",
+      "orderType": "到店取餐",
+      "realTotalAmount": 36.0,
+      "savings": 11.0,
+      "visitCount": 7,
+      "items": [
+        {
+          "name": "巨无霸",
+          "qty": 1,
+          "price": 24.0,
+          "kcal": 513,
+          "protein": 26.0,
+          "fat": 26.0,
+          "carbs": 43.0,
+          "category": "burger"
+        },
+        {
+          "name": "薯条(中)",
+          "qty": 1,
+          "price": 6.0,
+          "kcal": 330,
+          "protein": 4.0,
+          "fat": 16.0,
+          "carbs": 42.0,
+          "category": "fries"
+        },
+        {
+          "name": "灰焰圆筒",
+          "qty": 1,
+          "price": 6.0,
+          "kcal": 185,
+          "protein": 4.0,
+          "fat": 6.5,
+          "carbs": 28.0,
+          "category": "drink"
+        }
+      ]
+    },
+    "nutrition": {
+      "total_kcal": 1028,
+      "total_protein": 34.0,
+      "total_fat": 48.5,
+      "total_carbs": 113.0,
+      "focus_minutes": 22
+    },
+    "store_stamp": {
+      "serial_no": "HM-0512-1023-44F7",
+      "store_code": "1100512",
+      "store_name": "麦当劳北京望京SOHO餐厅",
+      "order_type": "到店取餐",
+      "shift_code": "DAYLIGHT-POP",
+      "ambience": "午间阳光卡座 · City Pop 明快律动",
+      "musical_key": "F Major Pentatonic",
+      "abc_key": "F",
+      "root_hz": 174.61,
+      "chord_progression": [
+        "Fmaj7",
+        "Em7",
+        "Dm7",
+        "Cmaj7"
+      ],
+      "base_bpm": 104,
+      "arpeggio_pattern": [
+        4,
+        6,
+        4,
+        0,
+        4,
+        7,
+        5,
+        7
+      ]
+    },
+    "easter_eggs": [
+      {
+        "id": "SWEET_COOL_DROP",
+        "badge": "🩶 当日上新 · 甜酷冰晶合成器",
+        "title": "10月新品「灰焰圆筒 / 蓝莓爆爆珠」彩蛋",
+        "desc": "命中 MCP campaign-calendar 10月甜品上新！解锁 Crystal Bell 玻璃冰晶琶音器与气泡粒子特效。",
+        "synth_mod": {
+          "theme": "ash_silver",
+          "extra_riff": "crystal_bell",
+          "bpm_boost": 4
+        }
+      }
+    ],
+    "campaigns_snapshot": [
+      {
+        "date": "2026-10-23",
+        "title": "🩶灰白撞色，灰焰圆筒酷爽登场",
+        "tag": "今日上新",
+        "keyword": "灰焰圆筒"
+      },
+      {
+        "date": "2026-10-23",
+        "title": "过家家派对上线，快来一起解锁梦想职业",
+        "tag": "童趣派对",
+        "keyword": "过家家派对"
+      },
+      {
+        "date": "2026-10-22",
+        "title": "第三周周边✨「我就喜欢」限定主题丝巾",
+        "tag": "周边限定",
+        "keyword": "限定丝巾"
+      },
+      {
+        "date": "2026-10-18",
+        "title": "学生专属！49元150天麦金学期卡💳",
+        "tag": "特权卡",
+        "keyword": "麦金学期卡"
+      },
+      {
+        "date": "2026-10-15",
+        "title": "麦当劳 X PEACEMINUSONE 联名徽章 & 小雏菊限定",
+        "tag": "潮流联名",
+        "keyword": "PEACEMINUSONE"
+      },
+      {
+        "date": "2026-10-14",
+        "title": "🍫麦咖啡13.9r浓浓黑巧来啦！",
+        "tag": "麦咖啡上新",
+        "keyword": "浓浓黑巧"
+      }
+    ],
+    "yue_symbolic_plan": {
+      "generator": "HappyMeal.exe x YuE2 Symbolic Bridge",
+      "reference_repo": "https://github.com/multimodal-art-projection/YuE",
+      "cot": "full",
+      "style": "city-pop, warm analog synth, pocket synthesizer, groovy bassline, playful, clean production",
+      "abc": "X:1\nT:HappyMeal.exe - MCD202610231530\nC:McDonald's MCP x YuE Symbolic Planner (HM-0512-1023-44F7)\nM:4/4\nL:1/8\nQ:1/4=104\nK:F\n\"Fmaj7\" c2 d2 f2 g2 |\n\"Em7\" a2 g2 f2 d2 |\n\"Dm7\" c2 d2 f2 a2 |\n\"Cmaj7\" g4 z4 |\n\"Fmaj7\" c1 d1 f1 a2 g3 |",
+      "lyrics": "[verse]\n2026-10-23 15:30 的 麦当劳北京望京SOHO餐厅\n出厂编号 HM-0512-1023-44F7 刚刚点亮\n餐盘上是 巨无霸×1、薯条(中)×1、灰焰圆筒×1\n一共 1028 大卡 把疲惫都融化\n\n[chorus]\n小时候等考满分 才有的开心乐园餐\n长大后一顿随心配 也能掉出声光玩具\nBa da ba ba ba 麦门永存\n这十五分钟 世界安静 只听我的合成器\n",
+      "metadata": {
+        "serial_no": "HM-0512-1023-44F7",
+        "total_kcal": 1028,
+        "easter_eggs": [
+          "🩶 当日上新 · 甜酷冰晶合成器"
+        ]
+      }
+    }
+  },
+  "morning_griddle": {
+    "order": {
+      "orderId": "MCD202610230812",
+      "createTime": "2026-10-23 08:12:45",
+      "storeCode": "2000319",
+      "storeName": "麦当劳广州天河城餐厅",
+      "city": "GUANGZHOU",
+      "orderType": "到店取餐",
+      "realTotalAmount": 21.5,
+      "savings": 9.5,
+      "visitCount": 64,
+      "items": [
+        {
+          "name": "枫糖风味厚松饼猪柳蛋堡",
+          "qty": 1,
+          "price": 15.0,
+          "kcal": 525,
+          "protein": 21.0,
+          "fat": 25.0,
+          "carbs": 53.0,
+          "category": "burger"
+        },
+        {
+          "name": "脆薯饼",
+          "qty": 1,
+          "price": 0.0,
+          "kcal": 150,
+          "protein": 1.5,
+          "fat": 9.0,
+          "carbs": 15.0,
+          "category": "fries"
+        },
+        {
+          "name": "冰美式小杯",
+          "qty": 1,
+          "price": 6.5,
+          "kcal": 10,
+          "protein": 0.5,
+          "fat": 0.0,
+          "carbs": 2.0,
+          "category": "drink"
+        }
+      ]
+    },
+    "nutrition": {
+      "total_kcal": 685,
+      "total_protein": 23.0,
+      "total_fat": 34.0,
+      "total_carbs": 70.0,
+      "focus_minutes": 15
+    },
+    "store_stamp": {
+      "serial_no": "HM-0319-1023-8EDB",
+      "store_code": "2000319",
+      "store_name": "麦当劳广州天河城餐厅",
+      "order_type": "到店取餐",
+      "shift_code": "MORNING-BREW",
+      "ambience": "清晨咖啡蒸气 · 原声木吉他声场",
+      "musical_key": "G Major Pentatonic",
+      "abc_key": "G",
+      "root_hz": 196.0,
+      "chord_progression": [
+        "Gmaj7",
+        "F#m7",
+        "Em7",
+        "Dmaj7"
+      ],
+      "base_bpm": 84,
+      "arpeggio_pattern": [
+        1,
+        4,
+        1,
+        7,
+        1,
+        7,
+        6,
+        6
+      ]
+    },
+    "easter_eggs": [
+      {
+        "id": "MORNING_GRIDDLE",
+        "badge": "🥞 早餐限定 · 枫糖原声八音盒",
+        "title": "早餐爆款「厚松饼堡」晨间彩蛋",
+        "desc": "早起的麦门信徒专属！合成器切入温暖 Rhodes 电钢琴与手冲咖啡滴滤环境声。",
+        "synth_mod": {
+          "theme": "maple_warm",
+          "extra_riff": "warm_rhodes",
+          "bpm_boost": -6
+        }
+      }
+    ],
+    "campaigns_snapshot": [
+      {
+        "date": "2026-10-23",
+        "title": "🩶灰白撞色，灰焰圆筒酷爽登场",
+        "tag": "今日上新",
+        "keyword": "灰焰圆筒"
+      },
+      {
+        "date": "2026-10-23",
+        "title": "过家家派对上线，快来一起解锁梦想职业",
+        "tag": "童趣派对",
+        "keyword": "过家家派对"
+      },
+      {
+        "date": "2026-10-22",
+        "title": "第三周周边✨「我就喜欢」限定主题丝巾",
+        "tag": "周边限定",
+        "keyword": "限定丝巾"
+      },
+      {
+        "date": "2026-10-18",
+        "title": "学生专属！49元150天麦金学期卡💳",
+        "tag": "特权卡",
+        "keyword": "麦金学期卡"
+      },
+      {
+        "date": "2026-10-15",
+        "title": "麦当劳 X PEACEMINUSONE 联名徽章 & 小雏菊限定",
+        "tag": "潮流联名",
+        "keyword": "PEACEMINUSONE"
+      },
+      {
+        "date": "2026-10-14",
+        "title": "🍫麦咖啡13.9r浓浓黑巧来啦！",
+        "tag": "麦咖啡上新",
+        "keyword": "浓浓黑巧"
+      }
+    ],
+    "yue_symbolic_plan": {
+      "generator": "HappyMeal.exe x YuE2 Symbolic Bridge",
+      "reference_repo": "https://github.com/multimodal-art-projection/YuE",
+      "cot": "full",
+      "style": "city-pop, warm analog synth, pocket synthesizer, groovy bassline, playful, clean production",
+      "abc": "X:1\nT:HappyMeal.exe - MCD202610230812\nC:McDonald's MCP x YuE Symbolic Planner (HM-0319-1023-8EDB)\nM:4/4\nL:1/8\nQ:1/4=84\nK:G\n\"Gmaj7\" c2 d2 f2 g2 |\n\"F#m7\" a2 g2 f2 d2 |\n\"Em7\" c2 d2 f2 a2 |\n\"Dmaj7\" g4 z4 |\n\"Gmaj7\" c1 d1 f1 a2 g3 |",
+      "lyrics": "[verse]\n2026-10-23 08:12 的 麦当劳广州天河城餐厅\n出厂编号 HM-0319-1023-8EDB 刚刚点亮\n餐盘上是 枫糖风味厚松饼猪柳蛋堡×1、脆薯饼×1、冰美式小杯×1\n一共 685 大卡 把疲惫都融化\n\n[chorus]\n小时候等考满分 才有的开心乐园餐\n长大后一顿随心配 也能掉出声光玩具\nBa da ba ba ba 麦门永存\n这十五分钟 世界安静 只听我的合成器\n",
+      "metadata": {
+        "serial_no": "HM-0319-1023-8EDB",
+        "total_kcal": 685,
+        "easter_eggs": [
+          "🥞 早餐限定 · 枫糖原声八音盒"
+        ]
+      }
+    }
+  },
+  "angus_overdrive": {
+    "order": {
+      "orderId": "MCD202610232048",
+      "createTime": "2026-10-23 20:48:10",
+      "storeCode": "3100102",
+      "storeName": "麦当劳杭州西湖文化广场餐厅",
+      "city": "HANGZHOU",
+      "orderType": "麦乐送",
+      "realTotalAmount": 58.0,
+      "savings": 22.0,
+      "visitCount": 108,
+      "items": [
+        {
+          "name": "芝士双层安格斯厚牛堡",
+          "qty": 1,
+          "price": 36.0,
+          "kcal": 1003,
+          "protein": 53.0,
+          "fat": 68.0,
+          "carbs": 42.0,
+          "category": "burger"
+        },
+        {
+          "name": "薯条(大)",
+          "qty": 1,
+          "price": 12.0,
+          "kcal": 480,
+          "protein": 6.0,
+          "fat": 23.0,
+          "carbs": 61.0,
+          "category": "fries"
+        },
+        {
+          "name": "麦辣鸡翅(2块)",
+          "qty": 1,
+          "price": 10.0,
+          "kcal": 260,
+          "protein": 16.0,
+          "fat": 17.0,
+          "carbs": 10.0,
+          "category": "nuggets"
+        },
+        {
+          "name": "可口可乐(中)",
+          "qty": 1,
+          "price": 0.0,
+          "kcal": 150,
+          "protein": 0.0,
+          "fat": 0.0,
+          "carbs": 39.0,
+          "category": "drink"
+        }
+      ]
+    },
+    "nutrition": {
+      "total_kcal": 1893,
+      "total_protein": 75.0,
+      "total_fat": 108.0,
+      "total_carbs": 152.0,
+      "focus_minutes": 42
+    },
+    "store_stamp": {
+      "serial_no": "HM-0102-1023-294F",
+      "store_code": "3100102",
+      "store_name": "麦当劳杭州西湖文化广场餐厅",
+      "order_type": "麦乐送",
+      "shift_code": "GOLDEN-HOUR",
+      "ambience": "傍晚霓虹招牌 · Funk 律动合成器",
+      "musical_key": "F Major Pentatonic",
+      "abc_key": "F",
+      "root_hz": 174.61,
+      "chord_progression": [
+        "Fmaj7",
+        "Em7",
+        "Dm7",
+        "Cmaj7"
+      ],
+      "base_bpm": 110,
+      "arpeggio_pattern": [
+        0,
+        0,
+        6,
+        6,
+        4,
+        6,
+        3,
+        2
+      ]
+    },
+    "easter_eggs": [
+      {
+        "id": "CALORIE_OVERDRIVE",
+        "badge": "🔥 千卡核弹 · 安格斯厚牛失真",
+        "title": "高能多巴胺冲击（本单 1893 kcal）",
+        "desc": "触发 list-nutrition-foods 热量榜首「安格斯厚牛 / 千卡大餐」！开启 Analog Warm Overdrive 饱和重低音。",
+        "synth_mod": {
+          "theme": "lava_red",
+          "extra_riff": "acid_overdrive",
+          "bpm_boost": 12
+        }
+      }
+    ],
+    "campaigns_snapshot": [
+      {
+        "date": "2026-10-23",
+        "title": "🩶灰白撞色，灰焰圆筒酷爽登场",
+        "tag": "今日上新",
+        "keyword": "灰焰圆筒"
+      },
+      {
+        "date": "2026-10-23",
+        "title": "过家家派对上线，快来一起解锁梦想职业",
+        "tag": "童趣派对",
+        "keyword": "过家家派对"
+      },
+      {
+        "date": "2026-10-22",
+        "title": "第三周周边✨「我就喜欢」限定主题丝巾",
+        "tag": "周边限定",
+        "keyword": "限定丝巾"
+      },
+      {
+        "date": "2026-10-18",
+        "title": "学生专属！49元150天麦金学期卡💳",
+        "tag": "特权卡",
+        "keyword": "麦金学期卡"
+      },
+      {
+        "date": "2026-10-15",
+        "title": "麦当劳 X PEACEMINUSONE 联名徽章 & 小雏菊限定",
+        "tag": "潮流联名",
+        "keyword": "PEACEMINUSONE"
+      },
+      {
+        "date": "2026-10-14",
+        "title": "🍫麦咖啡13.9r浓浓黑巧来啦！",
+        "tag": "麦咖啡上新",
+        "keyword": "浓浓黑巧"
+      }
+    ],
+    "yue_symbolic_plan": {
+      "generator": "HappyMeal.exe x YuE2 Symbolic Bridge",
+      "reference_repo": "https://github.com/multimodal-art-projection/YuE",
+      "cot": "full",
+      "style": "city-pop, warm analog synth, pocket synthesizer, groovy bassline, playful, clean production",
+      "abc": "X:1\nT:HappyMeal.exe - MCD202610232048\nC:McDonald's MCP x YuE Symbolic Planner (HM-0102-1023-294F)\nM:4/4\nL:1/8\nQ:1/4=110\nK:F\n\"Fmaj7\" c2 d2 f2 g2 |\n\"Em7\" a2 g2 f2 d2 |\n\"Dm7\" c2 d2 f2 a2 |\n\"Cmaj7\" g4 z4 |\n\"Fmaj7\" c1 d1 f1 a2 g3 |",
+      "lyrics": "[verse]\n2026-10-23 20:48 的 麦当劳杭州西湖文化广场餐厅\n出厂编号 HM-0102-1023-294F 刚刚点亮\n餐盘上是 芝士双层安格斯厚牛堡×1、薯条(大)×1、麦辣鸡翅(2块)×1、可口可乐(中)×1\n一共 1893 大卡 把疲惫都融化\n\n[chorus]\n小时候等考满分 才有的开心乐园餐\n长大后一顿随心配 也能掉出声光玩具\nBa da ba ba ba 麦门永存\n这十五分钟 世界安静 只听我的合成器\n",
+      "metadata": {
+        "serial_no": "HM-0102-1023-294F",
+        "total_kcal": 1893,
+        "easter_eggs": [
+          "🔥 千卡核弹 · 安格斯厚牛失真"
+        ]
+      }
+    }
+  }
+}
