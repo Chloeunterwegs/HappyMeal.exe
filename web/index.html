@@ -977,7 +977,7 @@
         <div class="thermal-80mm" id="thermal80mm">
           <div class="th-center">
             <div class="th-title">M · 开心乐园餐音乐单</div>
-            <div style="font-size:10px">McDONALD'S MCP × YuE THERMAL POS</div>
+            <div style="font-size:10px">McDONALD'S MCP × HAPPYMEAL THERMAL POS</div>
           </div>
           <div class="th-divider"></div>
           <div class="th-row"><span id="thStore">门店: 深夜八音盒厨房 · 虚构</span><span id="thCode">#DEMO</span></div>
@@ -1000,7 +1000,7 @@
 </div>
 
 <div class="footer-credit">
-  数据：麦当劳官方 MCP（只读） · 扩展渲染致谢 <a href="https://github.com/multimodal-art-projection/YuE" target="_blank">YuE</a>
+  非官方作品 · 默认演示数据为虚构 · 真实麦当劳订单为可选只读接入
 </div>
 
 <script>
@@ -1888,7 +1888,7 @@ function exportYuePackage() {
     "3. The symbolic score above is the ground truth of the in-app rendition — keep its structure and harmony.",
     "",
     `Generated ${new Date().toLocaleString("zh-CN")} by HappyMeal.exe · events: ${score.events.length} notes/drums over ${score.totalSteps} steps (${Math.round(score.totalSteps * score.stepSec)}s)`,
-    "Symbolic-score bridging inspired by YuE — many thanks to the multimodal-art-projection authors."
+    "Optional export format reference: YuE (github.com/multimodal-art-projection/YuE). This package is metadata only; HappyMeal.exe does not include or run YuE."
   ].join("\n");
   const blob = new Blob([md], { type: "text/markdown" });
   const a = document.createElement("a");
