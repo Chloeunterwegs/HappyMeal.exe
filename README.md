@@ -12,7 +12,7 @@ GitHub Pages 地址：
 
 **https://chloeunterwegs.github.io/HappyMeal.exe/web/index.html**
 
-如页面尚未开放，表示仓库已发布但 Pages 仍在配置或部署中，可先按下面的本地方式运行。
+仓库包含自动部署工作流。首次发布需由仓库管理员在 **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**；此后每次推送 `main` 会自动部署。若页面尚未开放，可先按下面的本地方式运行。
 
 ![HappyMeal.exe 当前桌面界面](./docs/assets/preview-desktop.png)
 
